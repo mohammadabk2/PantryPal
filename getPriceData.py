@@ -23,6 +23,15 @@ CONTAINER_TAGS = {
     'StoreId'
 }
 
+"""
+This function cleans an XML file by removing all tags except those specified in the whitelist.
+It also ensures that the structural container tags are preserved to maintain the XML hierarchy.
+Arguments:
+- file_path: Path to the XML or GZ file to be cleaned.
+- tags_to_keep: A set of tag names that should be retained in the cleaned XML.
+returns:
+- None. The function modifies the file in place and prints the number of removed elements.
+"""
 def clean_xml_file_whitelist(file_path,tags_to_keep=None):
     """Parses an XML/GZ file and removes everything EXCEPT whitelisted tags and containers."""
     try:
@@ -79,6 +88,6 @@ def test():
     scraper.start(limit=5)
     scraper.join()
     print("Done! files are in dumps")
-    clean_xml_file_whitelist('dumps/RamiLevy/Price7290058140886-001-001-20261024-070003.xml',)
-
+    clean_xml_file_whitelist(file_path='dumps/RamiLevy/Price7290058140886-001-001-20261024-070003.xml',tags_to_keep=TAGS_TO_KEEP)
+    # clean_xml_file_whitelist(file_path='dumps/Shufersal/Promo7290027600007-000-878-20261020-020000.xml',tags_to_keep=TAGS_TO_KEEP)
 test()
