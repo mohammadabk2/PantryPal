@@ -1,5 +1,6 @@
 import glob
 import gzip
+import json
 import os
 import re
 import urllib.request
@@ -86,7 +87,7 @@ def get_latest_file(directory, prefix):
     return max(files, key=os.path.getmtime)
 
 
-def clean_xml_file_whitelist(file_path, tags_to_keep):
+def clean_xml_file_whitelist(file_path, tags_to_keep, source):
     """Parses an XML file and removes everything EXCEPT whitelisted tags and containers.
         Args:
     - file_path: Path to the XML or GZ file to be cleaned.
@@ -113,6 +114,8 @@ def clean_xml_file_whitelist(file_path, tags_to_keep):
                 # If it's a container tag, keep it and traverse deeper inside it
                 if tag_name in CONTAINER_TAGS:
                     filter_elements(child)
+                    if source and tag_name == "Item":
+                        ET.SubElement(child, "Source").text = source
                 # If it's a tag we explicitly want to keep, leave it alone
                 elif tag_name in tags_to_keep:
                     continue
@@ -188,6 +191,11 @@ def remove_non_food_items(file_path):
 
 
 def get_rami_levi_data():
+    """Fetches the latest Rami Levi price file, cleans it, and removes non-food items.
+    Args:
+    - None.
+    returns:
+    - The path to the cleaned XML file."""
     print("Starting download...")
     scraper.start(limit=1)
     scraper.join()
@@ -195,26 +203,82 @@ def get_rami_levi_data():
     print("Procesing files for rami levi...")
     filepath_rami_levi = get_latest_file("dumps/RamiLevy", "PriceFull")
     clean_xml_file_whitelist(
-        file_path=filepath_rami_levi, tags_to_keep=TAGS_TO_KEEP_RAMI_LEVI
+        file_path=filepath_rami_levi,
+        tags_to_keep=TAGS_TO_KEEP_RAMI_LEVI,
+        source="Rami Levi",
     )
     remove_non_food_items(filepath_rami_levi)
+    return filepath_rami_levi
+
+
+def load_items(file_path):
+    """Reads a cleaned price file and returns its items as a list of dicts.
+    Args:
+    - file_path: Path to the XML or GZ price file.
+    returns:
+    - A list of dicts, each representing an <Item> element.
+    """
+    open_func = gzip.open if file_path.endswith(".gz") else open
+    with open_func(file_path, "rb") as f:
+        root = ET.parse(f).getroot()
+
+    items = []
+    for elem in root.iter():
+        if elem.tag.split("}")[-1] != "Item":
+            continue
+        items.append(
+            {child.tag.split("}")[-1]: (child.text or "").strip() for child in elem}
+        )
+    return items
+
+
+def merge_price_files(file_paths, output_path="dumps/merged_items.json"):
+    """Merges the items of several cleaned price files into one JSON list.
+    Args:
+    - file_paths: List of paths to cleaned XML or GZ price files.
+    - output_path: Path to the output JSON file.
+    returns:
+    - The merged list of items as a list of dicts. """
+    merged = []
+    for path in file_paths:
+        if not path:  # a download may have failed
+            continue
+        items = load_items(path)
+        print(f"Loaded {len(items)} items from {os.path.basename(path)}")
+        merged.extend(items)
+
+    with open(output_path, "w", encoding="utf-8") as f:
+        json.dump(merged, f, ensure_ascii=False, indent=2)
+
+    print(f"Wrote {len(merged)} items to {output_path}")
+    return merged
 
 
 def get_shufersal_data():
+    """Fetches the latest Shufersal price file, cleans it, and removes non-food items.
+    Args:
+    - None.
+    returns:
+    - The path to the cleaned XML file, or None if the download failed."""
     print("Starting download...")
     downloaded = download_shufersal_price_file()
     if not downloaded:
         print("Shufersal download failed, skipping.")
-        return
+        return None
     print("Done! files are in dumps")
     print("Procesing files for shufersal...")
     filepath_shufersal = get_latest_file(dump_dir, "PriceFull")
     clean_xml_file_whitelist(
-        file_path=filepath_shufersal, tags_to_keep=TaGS_TO_KEEP_SHUFERSAL
+        file_path=filepath_shufersal,
+        tags_to_keep=TaGS_TO_KEEP_SHUFERSAL,
+        source="Shufersal",
     )
     remove_non_food_items(filepath_shufersal)
+    return filepath_shufersal
 
 
 if __name__ == "__main__":
-    get_rami_levi_data()
-    get_shufersal_data()
+    # get_rami_levi_data()
+    # get_shufersal_data()
+    paths = [get_rami_levi_data(), get_shufersal_data()]
+    merge_price_files(paths, output_path="dumps/merged_items.json")

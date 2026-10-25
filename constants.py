@@ -16,14 +16,14 @@ TAGS_TO_KEEP_RAMI_LEVI = {
     "ItemCode",
     "ItemName",
     "ItemPrice",
-    "Quantity",
+    # "Quantity",
 }
 
 TaGS_TO_KEEP_SHUFERSAL = {
     "ItemCode",
     "ItemName",
     "ItemPrice",
-    "Quantity",
+    # "Quantity",
 }
 
 # Structural container tags that are required to keep the XML hierarchy intact
