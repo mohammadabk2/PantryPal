@@ -1,2 +1,3 @@
 /dumps
 *.log
+__pycache__/

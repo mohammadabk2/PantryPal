@@ -1,47 +1,30 @@
-from il_supermarket_scarper import ScarpingTask, ScraperFactory
+import glob
 import gzip
 import os
-import xml.etree.ElementTree as ET
 import re
 import urllib.request
-import glob
+import xml.etree.ElementTree as ET
+from urllib.error import URLError
 
+from il_supermarket_scarper import FileTypesFilters, ScarpingTask, ScraperFactory
+
+from constants import (
+    CONTAINER_TAGS,
+    NON_FOOD_KEYWORDS,
+    SHUFERSAL_URL,
+    TAGS_TO_KEEP_RAMI_LEVI,
+    TaGS_TO_KEEP_SHUFERSAL,
+)
 
 # Magic Values
-shufersal_url = "https://prices.shufersal.co.il/"
 dump_dir = "dumps/Shufersal"
 
-# Define ONLY the tags you want to keep
-TAGS_TO_KEEP_rami_levi = {
-    "ItemCode",
-    "ItemName",
-    "ItemPrice",
-    "Quantity",
-}
-
-TaGS_TO_KEEP_shufersal = {
-    "ItemCode",
-    "ItemName",
-    "ItemPrice",
-    "Quantity",
-}
 
 # Initialize scraper task with disk output configuration
 scraper = ScarpingTask(
     enabled_scrapers=[ScraperFactory.RAMI_LEVY.name],
+    files_types=[FileTypesFilters.PRICE_FULL_FILE.name],
 )
-
-# Structural container tags that are required to keep the XML hierarchy intact
-CONTAINER_TAGS = {
-    "root",
-    "Items",
-    "Item",
-    "Prices",
-    "Store",
-    "ChainId",
-    "SubChainId",
-    "StoreId",
-}
 
 
 def download_shufersal_price_file():
@@ -49,7 +32,7 @@ def download_shufersal_price_file():
     os.makedirs(dump_dir, exist_ok=True)
     print("Fetching Shufersal direct price file list...")
 
-    url = "https://prices.shufersal.co.il/"
+    url = SHUFERSAL_URL
     req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0"})
 
     try:
@@ -68,8 +51,7 @@ def download_shufersal_price_file():
 
         # Determine filename and change extension from .gz to .xml
         filename = target_url.split("/")[-1].split("?")[0]
-        if filename.endswith(".gz"):
-            filename = filename[:-3]  # Strip '.gz'
+        filename = filename.removesuffix(".gz")  # Strip '.gz'
         if not filename.endswith(".xml"):
             filename += ".xml"  # Ensure it ends with '.xml'
 
@@ -91,7 +73,7 @@ def download_shufersal_price_file():
         print(f"Successfully saved XML to {output_path}")
         return output_path
 
-    except Exception as e:
+    except (URLError, OSError, UnicodeError, EOFError) as e:
         print(f"Error downloading Shufersal price file: {e}")
         return None
 
@@ -151,7 +133,59 @@ def clean_xml_file_whitelist(file_path, tags_to_keep):
             f"Cleaned {os.path.basename(file_path)} (Whitelist mode): Stripped {removed_count} unwanted elements."
         )
 
-    except Exception as e:
+    except (OSError, ET.ParseError) as e:
+        print(f"Error processing {file_path}: {e}")
+
+
+_NON_FOOD_RE = re.compile("|".join(re.escape(k) for k in NON_FOOD_KEYWORDS))
+
+
+def remove_non_food_items(file_path):
+    """Removes <Item> elements whose ItemName matches a non-food keyword.
+
+    Args:
+    - file_path: Path to the XML or GZ price file. Modified in place.
+    returns:
+    - None. Prints the number of removed items.
+    """
+    try:
+        is_gzipped = file_path.endswith(".gz")
+        open_func = gzip.open if is_gzipped else open
+
+        with open_func(file_path, "rb") as f:
+            tree = ET.parse(f)
+            root = tree.getroot()
+
+        removed_count = 0
+        total_count = 0
+
+        for items_parent in root.iter():
+            if items_parent.tag.split("}")[-1] != "Items":
+                continue
+            for item in list(items_parent):
+                if item.tag.split("}")[-1] != "Item":
+                    continue
+                total_count += 1
+
+                name = ""
+                for child in item:
+                    if child.tag.split("}")[-1] == "ItemName":
+                        name = child.text or ""
+                        break
+
+                if _NON_FOOD_RE.search(name):
+                    items_parent.remove(item)
+                    removed_count += 1
+
+        with open_func(file_path, "wb") as f:
+            tree.write(f, encoding="utf-8", xml_declaration=True)
+
+        print(
+            f"Filtered {os.path.basename(file_path)}: removed {removed_count} "
+            f"non-food items out of {total_count}."
+        )
+
+    except (OSError, ET.ParseError) as e:
         print(f"Error processing {file_path}: {e}")
 
 
@@ -161,10 +195,12 @@ def get_rami_levi_data():
     scraper.join()
     print("Done! files are in dumps")
     print("Procesing files for rami levi...")
-    filepath_rami_levi = get_latest_file("dumps/RamiLevy", "Price")
+    # filepath_rami_levi = get_latest_file("dumps/RamiLevy", "Price")
+    filepath_rami_levi = get_latest_file("dumps/RamiLevy", "PriceFull")
     clean_xml_file_whitelist(
-        file_path=filepath_rami_levi, tags_to_keep=TAGS_TO_KEEP_rami_levi
+        file_path=filepath_rami_levi, tags_to_keep=TAGS_TO_KEEP_RAMI_LEVI
     )
+    remove_non_food_items(filepath_rami_levi)
 
 
 def get_shufersal_data():
@@ -174,8 +210,9 @@ def get_shufersal_data():
     print("Procesing files for shufersal...")
     filepath_shufersal = get_latest_file(dump_dir, "Price")
     clean_xml_file_whitelist(
-        file_path=filepath_shufersal, tags_to_keep=TaGS_TO_KEEP_shufersal
+        file_path=filepath_shufersal, tags_to_keep=TaGS_TO_KEEP_SHUFERSAL
     )
+    remove_non_food_items(filepath_shufersal)
 
 
 if __name__ == "__main__":
