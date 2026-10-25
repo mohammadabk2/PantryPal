@@ -11,6 +11,7 @@ from il_supermarket_scarper import FileTypesFilters, ScarpingTask, ScraperFactor
 from constants import (
     CONTAINER_TAGS,
     NON_FOOD_KEYWORDS,
+    SHUFERSAL_BLOB_PATTERN,
     SHUFERSAL_URL,
     TAGS_TO_KEEP_RAMI_LEVI,
     TaGS_TO_KEEP_SHUFERSAL,
@@ -32,16 +33,13 @@ def download_shufersal_price_file():
     os.makedirs(dump_dir, exist_ok=True)
     print("Fetching Shufersal direct price file list...")
 
-    url = SHUFERSAL_URL
-    req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0"})
+    req = urllib.request.Request(SHUFERSAL_URL, headers={"User-Agent": "Mozilla/5.0"})
 
     try:
         with urllib.request.urlopen(req) as response:
             html_content = response.read().decode("utf-8")
 
-        # Extract Azure Blob price links specifically (ignoring promos)
-        pattern = r'href="(https://pricesprodpublic\.blob\.core\.windows\.net/price/Price[^"]+\.gz[^"]*)"'
-        price_links = re.findall(pattern, html_content)
+        price_links = re.findall(SHUFERSAL_BLOB_PATTERN, html_content)
 
         if not price_links:
             print("No Shufersal price links found.")
@@ -195,7 +193,6 @@ def get_rami_levi_data():
     scraper.join()
     print("Done! files are in dumps")
     print("Procesing files for rami levi...")
-    # filepath_rami_levi = get_latest_file("dumps/RamiLevy", "Price")
     filepath_rami_levi = get_latest_file("dumps/RamiLevy", "PriceFull")
     clean_xml_file_whitelist(
         file_path=filepath_rami_levi, tags_to_keep=TAGS_TO_KEEP_RAMI_LEVI
@@ -205,10 +202,13 @@ def get_rami_levi_data():
 
 def get_shufersal_data():
     print("Starting download...")
-    download_shufersal_price_file()
+    downloaded = download_shufersal_price_file()
+    if not downloaded:
+        print("Shufersal download failed, skipping.")
+        return
     print("Done! files are in dumps")
     print("Procesing files for shufersal...")
-    filepath_shufersal = get_latest_file(dump_dir, "Price")
+    filepath_shufersal = get_latest_file(dump_dir, "PriceFull")
     clean_xml_file_whitelist(
         file_path=filepath_shufersal, tags_to_keep=TaGS_TO_KEEP_SHUFERSAL
     )

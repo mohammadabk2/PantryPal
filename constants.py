@@ -1,6 +1,15 @@
 # This file contains constants used in the getPriceData.py
 
-SHUFERSAL_URL = "https://prices.shufersal.co.il/"
+SHUFERSAL_URL = (
+    "https://prices.shufersal.co.il/FileObject/UpdateCategory"
+    "?catID=2&storeId=0&sort=Time&order=Desc"
+)
+
+# Container name differs between partial (/price/) and full (/pricefull/) files,
+# so match on the filename instead of the path.
+SHUFERSAL_BLOB_PATTERN = (
+    r'href="(https://pricesprodpublic\.blob\.core\.windows\.net/[^"]*?PriceFull[^"]+\.gz[^"]*)"'
+)
 
 # Define ONLY the tags you want to keep
 TAGS_TO_KEEP_RAMI_LEVI = {
