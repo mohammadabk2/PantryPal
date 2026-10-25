@@ -1,12 +1,9 @@
 # PantryPal
 **An AI-Powered Smart Kitchen Management and Grocery Price Optimization System**
-Final Year Software Engineering Project Proposal  
-Project Team: Two Software Engineering Students  
-Project Duration: Approximately 30 Weeks  
-Project Type: Full-Stack Web Application with Artificial Intelligence and Data Integration  
+Student: Mohammad Abu Khdier And Raneeen Kharma | Supervisor: Tzur Loria | Date: October 2026
  
 
-## 1. Abstract
+## 1. Introduction
 PantryPal is an intelligent kitchen management and grocery optimization application designed to help households manage food inventory, reduce food waste, plan meals, and make cost-effective grocery purchasing decisions.
 Many households struggle to track the products they already own, remember expiration dates, decide what to cook, and compare grocery prices across different supermarkets. These challenges often lead to unnecessary purchases, food waste, and increased household expenses.
 PantryPal aims to address these problems by combining smart inventory management, AI-powered recipe recommendations, personalized weekly meal planning, automatic shopping list generation, and supermarket price comparison within a single application.
@@ -89,34 +86,14 @@ For example, if a recipe requires four eggs and the user already has two, the ap
 Where supermarket package sizes differ from the required quantities, the system will account for purchasable package units. Shopping lists will be generated from the selected meal plan and adjusted to exclude ingredients already available in sufficient quantities.
 
 ### 5.6 Supermarket Price Comparison
-PantryPal will follow an **API-first data collection strategy**: when a supermarket offers an accessible, authorized API for relevant product and price information, the system will use it instead of scraping. If no suitable API is available, PantryPal may use permitted scraping or published price-transparency files.
-The current project includes a scraper component described as working with **Rami Levy (רמי לוי)** and **Shufersal (שופרסל)** and returning structured **JSON** with food product details, prices, and source attribution. This is a description of the reported component, not a claim of an official retailer API.
-**Initial retailer scope:** Rami Levy and Shufersal; Wolt and Haat are potential future sources only if reliable, authorized access is available.
-Regardless of the collection method, the system will normalize catalog and pricing information into a consistent JSON-based representation for product matching, price comparisons, meal-plan budgeting, and personalized shopping recommendations.
-Data collection must respect applicable terms, permissions, technical restrictions, and law. The system will retain source identifiers, relevant branch or online channel, and retrieval timestamps where available.
-The system will process retailer data containing product prices, branch information, and promotional offers.
-Its capabilities will include:
+PantryPal will scrape relevant websites and returning structured JSON with food product details, prices, and source attribution.
+The system will normalize catalog and pricing information into a consistent JSON-based representation for product matching, price comparisons, meal-plan budgeting, and personalized shopping recommendations.
 
-- Product matching using barcodes and standardized product information
 - Price comparison across supported supermarket branches
-- Price-per-unit comparison
-- Promotion identification and interpretation
-- Shopping basket cost calculation
-- Display of price data timestamps and applicable store branches
-Prices and promotions may differ between physical branches and online shopping platforms.
-Online price comparison will only be supported for retailers where reliable, appropriately accessible online pricing data is available.
+- Shopping basket cost calculation (estimation)
 
 ### 5.7 Grocery Basket Optimization
 The application will calculate and compare the estimated total cost of a shopping basket across supported supermarkets.
-The optimization algorithm will consider:
-
-- Product prices
-- Required quantities and package sizes
-- Applicable promotions
-- Product availability in the imported catalog
-- User-selected shopping constraints
-The system may recommend the lowest-cost single-store basket or compare alternatives.
-For the initial version, the comparison will focus on published product prices and eligible promotions. Delivery fees, live stock availability, and online checkout prices will only be included when reliable data is available.
 
 ### 5.8 Store Redirection
 After comparing shopping options, users will be able to open the selected retailer's website or supported store page.
@@ -220,48 +197,8 @@ Depending on development progress and external data availability:
 - Additional personalization features
 Direct retailer checkout integration and payment processing are not included in the core scope.
 
-## 10. Division of Responsibilities
-The project will be developed by two Software Engineering students with separate primary responsibilities and shared integration tasks.
 
-**Student 1 — Smart Kitchen and AI**
-Responsible for:
-
-- Inventory management
-- Receipt OCR
-- Expiration tracking
-- Recipe database and recommendation logic
-- Machine learning personalization
-- LLM chatbot integration
-- Personalized waste-and-buying coaching
-- Weekly meal planning
-- Evaluation of recommendation quality
-
-**Student 2 — Grocery Intelligence and Optimization**
-Responsible for:
-
-- Researching Israeli grocery pricing data sources
-- Retailer API assessment, permitted scraper integration, and data processing
-- Product normalization and matching
-- Promotion interpretation
-- Price comparison services
-- Shopping basket optimization
-- Store redirection
-- Evaluation of pricing and basket calculation accuracy
-
-**Shared Responsibilities**
-Both students will collaborate on:
-
-- Requirements analysis
-- System architecture
-- Database and API design
-- Frontend development
-- Integration testing
-- Security and privacy
-- Deployment
-- Documentation
-- Final presentation
-
-## 11. Development Methodology and Timeline
+## 10. Development Methodology and Timeline
 The project will follow an iterative development methodology over approximately 30 weeks.
 
 | Phase | Weeks | Main Deliverables |
@@ -309,14 +246,7 @@ The project will distinguish between measured outcomes and estimates.
 | Changing retailer data sources | Add monitoring, import logs, and fallback behavior |
 | Development time constraints | Prioritize an achievable MVP and defer optional integrations |
 
-## 14. Privacy and Security
-PantryPal will follow privacy-by-design principles.
-The application will collect only the data required for its functionality, protect user accounts, and use secure communication between the frontend and backend.
-Sensitive user information will not be included in external LLM requests unless necessary and appropriately disclosed.
-Users will be informed when external AI services are used.
-The application will also support reasonable data deletion and account management functionality.
-
-## 15. Expected Results
+## 14. Expected Results
 By the end of the project, the team expects to deliver:
 
 - A working responsive PantryPal application
@@ -331,14 +261,14 @@ By the end of the project, the team expects to deliver:
 - Technical documentation and an evaluation report
 The final system will demonstrate how artificial intelligence, household inventory data, and supermarket pricing information can be combined to support more efficient food management and purchasing decisions.
 
-## 16. Innovation and Contribution
+## 15. Innovation and Contribution
 PantryPal's main innovation is the integration of kitchen management, personalized meal planning, and grocery price optimization into one intelligent workflow.
 Rather than treating grocery shopping and cooking as independent tasks, the system connects them.
 For example, when a user selects a weekly meal plan, PantryPal can identify the ingredients already available, calculate missing quantities, compare supermarket prices, and recommend purchasing options.
 The system can also prioritize ingredients approaching expiration, reducing the risk that cost-saving promotions lead to unnecessary overbuying.
 This combination provides both an engineering challenge and a practical consumer-oriented solution.
 
-## 17. Conclusion
+## 16. Conclusion
 PantryPal aims to transform everyday household food management into a more intelligent, organized, and cost-effective process.
 By combining inventory tracking, AI-based recipe recommendations, personalized meal planning, and grocery price comparison, the application will help users reduce unnecessary purchases, make better use of available ingredients, and make more informed shopping decisions.
 The project offers meaningful technical challenges in full-stack development, machine learning, data integration, product matching, and optimization.
