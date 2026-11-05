@@ -182,3 +182,12 @@
     border-right-color: var(--border);
   }
 }
+
+.language-switcher {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  justify-content: flex-end;
+  padding-block: 0.75rem;
+  padding-inline: 1rem;
+}
