@@ -1,0 +1,17 @@
+{
+  "common": {
+    "appName": "PantryPal",
+    "language": "اللغة"
+  },
+  "home": {
+    "welcome": "مرحباً بك في PantryPal",
+    "login": "تسجيل الدخول",
+    "noAccount": "ليس لديك حساب؟",
+    "signUp": "إنشاء حساب"
+  },
+  "login": {
+    "title": "تسجيل الدخول",
+    "formPlaceholder": "نموذج تسجيل الدخول هنا.",
+    "backHome": "العودة إلى الصفحة الرئيسية"
+  }
+}
