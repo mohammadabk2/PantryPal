@@ -1,0 +1,17 @@
+{
+  "common": {
+    "appName": "PantryPal",
+    "language": "Language"
+  },
+  "home": {
+    "welcome": "Welcome to PantryPal",
+    "login": "Login",
+    "noAccount": "Don't have an account?",
+    "signUp": "Sign Up"
+  },
+  "login": {
+    "title": "Login",
+    "formPlaceholder": "Login form goes here.",
+    "backHome": "Back to home"
+  }
+}
