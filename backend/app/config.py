@@ -13,6 +13,8 @@ class Settings(BaseSettings):
     app_name: str
     # Comma-separated list, e.g. "http://localhost:5173,http://localhost:3000"
     cors_origins_raw: str = Field(alias="CORS_ORIGINS")
+    # e.g. "postgresql+psycopg://pantrypal:pantrypal@localhost:5432/pantrypal"
+    database_url: str = Field(alias="DATABASE_URL")
 
     @property
     def cors_origins(self) -> list[str]:

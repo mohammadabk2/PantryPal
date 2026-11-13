@@ -1,0 +1,24 @@
+# PantryPal services.
+# Start:  docker compose up -d
+# Stop:   docker compose down        (add -v to also wipe the database data)
+services:
+  db:
+    image: postgres:17-alpine
+    container_name: pantrypal-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-pantrypal}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-pantrypal}
+      POSTGRES_DB: ${POSTGRES_DB:-pantrypal}
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  pgdata:

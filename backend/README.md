@@ -26,6 +26,7 @@ Settings are loaded from `app/.env` (see `app/config.py`). A real environment va
 | -------------- | -------------------------------------------------- | ----------------------- |
 | `APP_NAME`     | Name shown in the API docs and root response       | `PantryPal`             |
 | `CORS_ORIGINS` | Comma-separated list of allowed frontend origins   | `http://localhost:5173` |
+| `DATABASE_URL` | SQLAlchemy URL for the Postgres database (start it with `docker compose up -d` from the repo root) | `postgresql+psycopg://pantrypal:pantrypal@localhost:5432/pantrypal` |
 
 Every variable is required. If one is missing, the server refuses to start and the error names it.
 
@@ -40,6 +41,20 @@ uvicorn app.main:app --reload
 - API: http://localhost:8000
 
 `--reload` restarts the server whenever you save a file. Leave it off in production.
+
+## Docker
+
+***in root run***
+
+- Turn on Docker
+```bash
+sudo docker compose up -d
+```
+
+- Turn off Docker
+```bash
+sudo docker compose down
+```
 
 ## Endpoints
 
