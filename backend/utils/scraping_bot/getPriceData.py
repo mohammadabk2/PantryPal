@@ -9,7 +9,7 @@ from urllib.error import URLError
 
 from il_supermarket_scarper import FileTypesFilters, ScarpingTask, ScraperFactory
 
-from constants import (
+from backend.utils.scraping_bot.constants import (
     CONTAINER_TAGS,
     NON_FOOD_KEYWORDS,
     SHUFERSAL_BLOB_PATTERN,
