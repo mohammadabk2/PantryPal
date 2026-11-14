@@ -30,6 +30,17 @@ Settings are loaded from `app/.env` (see `app/config.py`). A real environment va
 
 Every variable is required. If one is missing, the server refuses to start and the error names it.
 
+## Database tables
+
+Models live in `app/models/` (one file per table)
+With the database running
+
+```bash
+python -m app.init_db
+```
+
+This only creates tables that don't exist yet. It does not change a table that already 
+
 ## Running the server
 
 From `backend/`, with the virtual environment active:
@@ -63,3 +74,4 @@ sudo docker compose down
 | GET    | `/`           | Checks the API is up   |
 | GET    | `/api/health` | Health check           |
 
+| POST   | `/api/auth/register` | Create an account |
