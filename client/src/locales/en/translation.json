@@ -7,11 +7,22 @@
     "welcome": "Welcome to PantryPal",
     "login": "Login",
     "noAccount": "Don't have an account?",
-    "signUp": "Sign Up"
+    "signUp": "Sign Up",
+    "loggedInAs": "Signed in as {{name}}",
+    "logout": "Log out"
   },
   "login": {
     "title": "Login",
-    "formPlaceholder": "Login form goes here.",
-    "backHome": "Back to home"
+    "emailLabel": "Email",
+    "passwordLabel": "Password",
+    "submit": "Log in",
+    "submitting": "Logging in…",
+    "backHome": "Back to home",
+    "errors": {
+      "invalidCredentials": "Incorrect email or password.",
+      "accountDisabled": "This account is disabled.",
+      "serverUnreachable": "Can't reach the server. Please try again.",
+      "generic": "Something went wrong. Please try again."
+    }
   }
 }
