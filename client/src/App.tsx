@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router'
 import { useTranslation } from 'react-i18next'
 import LanguageSwitcher from './components/LanguageSwitcher'
 import { useAuth } from './auth/useAuth'
-import './App.css'
 
 function App() {
   const navigate = useNavigate()
@@ -26,7 +25,7 @@ function App() {
         {user ? (
           <div>
             <h2 className="subtitle">{t('home.loggedInAs', { name: user.display_name })}</h2>
-            <button className="button" onClick={logout}>
+            <button className="btn btn-secondary" onClick={logout}>
               {t('home.logout')}
             </button>
           </div>
@@ -35,14 +34,14 @@ function App() {
           status === 'anonymous' && (
             <>
               <div>
-                <button className="button" onClick={() => navigate('/login')}>
+                <button className="btn" onClick={() => navigate('/login')}>
                   {t('home.login')}
                 </button>
               </div>
 
               <div>
                 <h2 className="subtitle">{t('home.noAccount')}</h2>
-                <button className="button" onClick={() => navigate('/signup')}>
+                <button className="btn" onClick={() => navigate('/signup')}>
                   {t('home.signUp')}
                 </button>
               </div>

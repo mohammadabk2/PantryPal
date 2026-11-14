@@ -5,7 +5,6 @@ import LanguageSwitcher from '../components/LanguageSwitcher'
 import { ApiError } from '../api/client'
 import type { RegisterData } from '../api/auth'
 import { useAuth } from '../auth/useAuth'
-import './Auth.css'
 import './Signup.css'
 
 // Must match the limits in backend/app/schemas/user.py (UserCreate).
@@ -145,6 +144,7 @@ function Signup() {
   // Props every step's input shares. autoFocus works because each step mounts fresh (see key below).
   const common = {
     id: inputId,
+    className: 'input input-lg',
     autoFocus: true,
     'aria-invalid': error ? true : undefined,
     'aria-describedby': error ? 'signup-error' : undefined,
@@ -261,14 +261,14 @@ function Signup() {
             {stepIndex > 0 && (
               <button
                 type="button"
-                className="button-secondary"
+                className="btn btn-secondary"
                 disabled={busy}
                 onClick={() => goTo(stepIndex - 1, 'back')}
               >
                 {t('signup.back')}
               </button>
             )}
-            <button type="submit" className="auth-submit" disabled={busy}>
+            <button type="submit" className="btn" disabled={busy}>
               {!isLastStep
                 ? t('signup.next')
                 : submitting

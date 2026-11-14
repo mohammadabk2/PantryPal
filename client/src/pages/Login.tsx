@@ -4,7 +4,6 @@ import { useTranslation } from 'react-i18next'
 import LanguageSwitcher from '../components/LanguageSwitcher'
 import { ApiError } from '../api/client'
 import { useAuth } from '../auth/useAuth'
-import './Auth.css'
 
 // Translation key for each way a login can fail.
 function errorKey(err: unknown) {
@@ -50,15 +49,16 @@ function Login() {
         <h1 className="title">{t('login.title')}</h1>
 
         <form
-          className="auth-form"
+          className="form"
           onSubmit={(e) => {
             e.preventDefault()
             void submit()
           }}
         >
-          <label>
+          <label className="field">
             {t('login.emailLabel')}
             <input
+              className="input"
               type="email"
               dir="ltr"
               autoComplete="email"
@@ -68,9 +68,10 @@ function Login() {
             />
           </label>
 
-          <label>
+          <label className="field">
             {t('login.passwordLabel')}
             <input
+              className="input"
               type="password"
               autoComplete="current-password"
               required
@@ -85,7 +86,7 @@ function Login() {
             </p>
           )}
 
-          <button type="submit" className="auth-submit" disabled={submitting}>
+          <button type="submit" className="btn" disabled={submitting}>
             {submitting ? t('login.submitting') : t('login.submit')}
           </button>
         </form>
