@@ -24,5 +24,38 @@
       "serverUnreachable": "Can't reach the server. Please try again.",
       "generic": "Something went wrong. Please try again."
     }
+  },
+  "signup": {
+    "title": "Sign Up",
+    "stepOf": "Step {{current}} of {{total}}",
+    "back": "Back",
+    "next": "Continue",
+    "submit": "Create account",
+    "submitting": "Creating account…",
+    "showPassword": "Show",
+    "hidePassword": "Hide",
+    "haveAccount": "Already have an account?",
+    "backHome": "Back to home",
+    "steps": {
+      "name": {
+        "question": "What should we call you?"
+      },
+      "email": {
+        "question": "Nice to meet you, {{name}}! What's your email?"
+      },
+      "password": {
+        "question": "Pick a password",
+        "hint": "At least 8 characters"
+      }
+    },
+    "errors": {
+      "nameRequired": "Please enter your name.",
+      "emailInvalid": "Please enter a valid email address.",
+      "passwordTooShort": "Your password needs at least 8 characters.",
+      "emailTaken": "An account with this email already exists.",
+      "invalidInput": "Please check your details and try again.",
+      "serverUnreachable": "Can't reach the server. Please try again.",
+      "generic": "Something went wrong. Please try again."
+    }
   }
 }

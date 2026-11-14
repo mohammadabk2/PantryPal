@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useState, type ReactNode } from 'react'
 import { ApiError, tokenStorage } from '../api/client'
-import { getMe, loginRequest, type User } from '../api/auth'
+import { getMe, loginRequest, registerRequest, type RegisterData, type User } from '../api/auth'
 import { AuthContext, type AuthStatus } from './context'
 
 export function AuthProvider({ children }: { children: ReactNode }) {
@@ -43,13 +43,24 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   }, [])
 
+  const register = useCallback(
+    async (data: RegisterData) => {
+      await registerRequest(data)
+      await login(data.email, data.password)
+    },
+    [login],
+  )
+
   const logout = useCallback(() => {
     tokenStorage.clear()
     setUser(null)
     setStatus('anonymous')
   }, [])
 
-  const value = useMemo(() => ({ user, status, login, logout }), [user, status, login, logout])
+  const value = useMemo(
+    () => ({ user, status, login, register, logout }),
+    [user, status, login, register, logout],
+  )
 
   return <AuthContext value={value}>{children}</AuthContext>
 }

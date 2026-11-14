@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next'
 import LanguageSwitcher from '../components/LanguageSwitcher'
 import { ApiError } from '../api/client'
 import { useAuth } from '../auth/useAuth'
-import './Login.css'
+import './Auth.css'
 
 // Translation key for each way a login can fail.
 function errorKey(err: unknown) {
@@ -89,6 +89,10 @@ function Login() {
             {submitting ? t('login.submitting') : t('login.submit')}
           </button>
         </form>
+
+        <p>
+          {t('home.noAccount')} <Link to="/signup">{t('home.signUp')}</Link>
+        </p>
 
         <Link to="/">{t('login.backHome')}</Link>
       </section>

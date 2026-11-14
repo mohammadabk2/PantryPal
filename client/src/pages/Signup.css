@@ -1,0 +1,204 @@
+.signup-wizard {
+  /* How far a question slides. Flipped for right-to-left languages below. */
+  --slide: 40px;
+
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  width: 100%;
+  max-width: 480px;
+  text-align: start;
+  /* Hide the sliding question past the edges, but leave room for focus outlines. */
+  overflow: clip;
+  overflow-clip-margin: 8px;
+}
+
+[dir='rtl'] .signup-wizard {
+  --slide: -40px;
+}
+
+/* Progress bar */
+.signup-progress {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 14px;
+}
+
+.progress-track {
+  height: 6px;
+  border-radius: 999px;
+  background: var(--border);
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  border-radius: inherit;
+  background: var(--accent);
+  transition: width 300ms ease;
+}
+
+/* One question */
+.signup-step {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+
+  input {
+    font: inherit;
+    font-size: 20px;
+    width: 100%;
+    box-sizing: border-box;
+    padding: 12px 14px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: var(--bg);
+    color: var(--text-h);
+
+    &:focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 1px;
+    }
+    &[aria-invalid='true'] {
+      border-color: var(--error);
+    }
+  }
+}
+
+.step-question {
+  font-family: var(--heading);
+  font-size: 32px;
+  font-weight: 500;
+  line-height: 1.2;
+  letter-spacing: -0.5px;
+  color: var(--text-h);
+
+  @media (max-width: 1024px) {
+    font-size: 26px;
+  }
+}
+
+.password-field {
+  position: relative;
+
+  input {
+    padding-inline-end: 80px;
+  }
+}
+
+.toggle-visibility {
+  position: absolute;
+  inset-inline-end: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  padding: 6px 10px;
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--accent);
+  font: inherit;
+  font-size: 14px;
+  cursor: pointer;
+
+  &:hover {
+    background: var(--accent-bg);
+  }
+  &:focus-visible {
+    outline: 2px solid var(--accent);
+  }
+}
+
+.field-hint {
+  font-size: 14px;
+  color: var(--text);
+  transition: color 200ms;
+
+  &.met {
+    color: var(--success);
+  }
+}
+
+/* Buttons */
+.signup-actions {
+  display: flex;
+  gap: 12px;
+
+  .auth-submit {
+    flex: 1;
+  }
+}
+
+.button-secondary {
+  font: inherit;
+  padding: 10px 16px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: transparent;
+  color: var(--text-h);
+  cursor: pointer;
+
+  &:hover:not(:disabled) {
+    border-color: var(--accent-border);
+  }
+  &:disabled {
+    opacity: 0.6;
+  }
+  &:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+}
+
+/* Slide animations. Going forward, the new question comes in from the end side
+   (right in English, left in Arabic) and the old one leaves toward the start side. */
+.enter-forward {
+  --from: var(--slide);
+  animation: step-in 250ms ease-out both;
+}
+.enter-back {
+  --from: calc(var(--slide) * -1);
+  animation: step-in 250ms ease-out both;
+}
+/* 180ms must match LEAVE_MS in Signup.tsx. */
+.leave-forward {
+  --to: calc(var(--slide) * -1);
+  animation: step-out 180ms ease-in both;
+}
+.leave-back {
+  --to: var(--slide);
+  animation: step-out 180ms ease-in both;
+}
+
+@keyframes step-in {
+  from {
+    opacity: 0;
+    transform: translateX(var(--from));
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes step-out {
+  from {
+    opacity: 1;
+    transform: none;
+  }
+  to {
+    opacity: 0;
+    transform: translateX(var(--to));
+  }
+}
+
+/* "Reduce motion" turned on in system settings: fade only, no sliding. */
+@media (prefers-reduced-motion: reduce) {
+  .signup-wizard,
+  [dir='rtl'] .signup-wizard {
+    --slide: 0px;
+  }
+  .progress-fill {
+    transition: none;
+  }
+}
