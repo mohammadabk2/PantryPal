@@ -28,3 +28,18 @@ class UserRead(BaseModel):
     display_name: str
     preferred_language: str
     created_at: datetime
+
+
+class LoginRequest(BaseModel):
+    """Body of POST /api/auth/login."""
+
+    email: EmailStr
+    password: str = Field(max_length=128)
+
+
+class Token(BaseModel):
+    """Returned by login. The client sends it back as `Authorization: Bearer <access_token>`."""
+
+    access_token: str
+    token_type: str = "bearer"
+    expires_in: int  # seconds until the token expires

@@ -15,6 +15,10 @@ class Settings(BaseSettings):
     cors_origins_raw: str = Field(alias="CORS_ORIGINS")
     # e.g. "postgresql+psycopg://pantrypal:pantrypal@localhost:5432/pantrypal"
     database_url: str = Field(alias="DATABASE_URL")
+    # Signs login tokens. Long random string, e.g. python -c "import secrets; print(secrets.token_urlsafe(64))"
+    jwt_secret_key: str = Field(alias="JWT_SECRET_KEY", min_length=32)
+    # How long a login token stays valid. Default: 1 day.
+    access_token_expire_minutes: int = Field(default=60 * 24, alias="ACCESS_TOKEN_EXPIRE_MINUTES", gt=0)
 
     @property
     def cors_origins(self) -> list[str]:

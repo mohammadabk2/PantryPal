@@ -27,8 +27,10 @@ Settings are loaded from `app/.env` (see `app/config.py`). A real environment va
 | `APP_NAME`     | Name shown in the API docs and root response       | `PantryPal`             |
 | `CORS_ORIGINS` | Comma-separated list of allowed frontend origins   | `http://localhost:5173` |
 | `DATABASE_URL` | SQLAlchemy URL for the Postgres database (start it with `docker compose up -d` from the repo root) | `postgresql+psycopg://pantrypal:pantrypal@localhost:5432/pantrypal` |
+| `JWT_SECRET_KEY` | Secret that signs login tokens (32+ characters). Generate one with `python -c "import secrets; print(secrets.token_urlsafe(64))"`. Changing it logs everyone out | — |
+| `ACCESS_TOKEN_EXPIRE_MINUTES` | Optional. How long a login lasts (default `1440`, one day) | `1440` |
 
-Every variable is required. If one is missing, the server refuses to start and the error names it.
+Every variable is required unless marked optional. If one is missing, the server refuses to start and the error names it.
 
 ## Database tables
 
@@ -73,5 +75,7 @@ sudo docker compose down
 | ------ | ------------- | ---------------------- |
 | GET    | `/`           | Checks the API is up   |
 | GET    | `/api/health` | Health check           |
-
 | POST   | `/api/auth/register` | Create an account |
+| POST   | `/api/auth/login` | Log in, get a token |
+| GET    | `/api/auth/me` | The logged-in user (needs token) |
+
