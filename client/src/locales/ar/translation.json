@@ -46,6 +46,10 @@
       "password": {
         "question": "اختر كلمة مرور",
         "hint": "8 أحرف على الأقل"
+      },
+      "tags": {
+        "question": "ماذا تحب أن تأكل؟",
+        "hint": "اختر ما تشاء، أو لا شيء. يمكنك تغيير ذلك لاحقاً."
       }
     },
     "errors": {
@@ -57,5 +61,42 @@
       "serverUnreachable": "تعذّر الاتصال بالخادم. يرجى المحاولة مرة أخرى.",
       "generic": "حدث خطأ ما. يرجى المحاولة مرة أخرى."
     }
+  },
+  "tags": {
+    "middle_eastern": "شرق أوسطي",
+    "mediterranean": "متوسطي",
+    "italian": "إيطالي",
+    "asian": "آسيوي",
+    "indian": "هندي",
+    "mexican": "مكسيكي",
+    "breakfast": "فطور",
+    "salads": "سلطات",
+    "soups": "شوربات",
+    "baking": "مخبوزات",
+    "desserts": "حلويات",
+    "quick": "وجبات سريعة التحضير",
+    "healthy": "صحي",
+    "spicy": "حار",
+    "comfort_food": "أكلات بيتية",
+    "chicken": "دجاج",
+    "beef": "لحم بقر",
+    "fish": "سمك",
+    "eggs": "بيض",
+    "cheese": "أجبان",
+    "pasta": "معكرونة",
+    "rice": "أرز",
+    "legumes": "بقوليات",
+    "vegetables": "خضار"
+  },
+  "tagGroups": {
+    "cuisine": "المطابخ",
+    "dish": "الأطباق",
+    "style": "الأسلوب",
+    "ingredient": "المكونات"
+  },
+  "tagPicker": {
+    "loading": "جارٍ تحميل الخيارات…",
+    "loadFailed": "تعذّر تحميل الخيارات.",
+    "retry": "إعادة المحاولة"
   }
 }

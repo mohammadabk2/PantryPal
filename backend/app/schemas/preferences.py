@@ -36,7 +36,13 @@ class TagWeightRead(BaseModel):
     weight: float
 
 
+class TagGroup(BaseModel):
+    name: str  # e.g. "cuisine"
+    tags: list[str]
+
+
 class PreferenceOptions(BaseModel):
     """Body of GET /api/preferences/options: the values the client can offer."""
 
     dietary_restrictions: list[DietaryRestriction]
+    tag_groups: list[TagGroup]

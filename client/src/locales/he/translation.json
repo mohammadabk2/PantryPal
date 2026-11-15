@@ -46,6 +46,10 @@
       "password": {
         "question": "בחירת סיסמה",
         "hint": "לפחות 8 תווים"
+      },
+      "tags": {
+        "question": "מה אוהבים לאכול?",
+        "hint": "אפשר לבחור כמה שרוצים, או לא לבחור בכלל. אפשר לשנות את זה בהמשך."
       }
     },
     "errors": {
@@ -57,5 +61,42 @@
       "serverUnreachable": "אין חיבור לשרת. כדאי לנסות שוב.",
       "generic": "משהו השתבש. כדאי לנסות שוב."
     }
+  },
+  "tags": {
+    "middle_eastern": "מזרח תיכוני",
+    "mediterranean": "ים תיכוני",
+    "italian": "איטלקי",
+    "asian": "אסייתי",
+    "indian": "הודי",
+    "mexican": "מקסיקני",
+    "breakfast": "ארוחת בוקר",
+    "salads": "סלטים",
+    "soups": "מרקים",
+    "baking": "אפייה",
+    "desserts": "קינוחים",
+    "quick": "ארוחות מהירות",
+    "healthy": "בריא",
+    "spicy": "חריף",
+    "comfort_food": "אוכל מנחם",
+    "chicken": "עוף",
+    "beef": "בקר",
+    "fish": "דגים",
+    "eggs": "ביצים",
+    "cheese": "גבינות",
+    "pasta": "פסטה",
+    "rice": "אורז",
+    "legumes": "קטניות",
+    "vegetables": "ירקות"
+  },
+  "tagGroups": {
+    "cuisine": "מטבחים",
+    "dish": "מנות",
+    "style": "סגנון",
+    "ingredient": "מרכיבים"
+  },
+  "tagPicker": {
+    "loading": "טוענים אפשרויות…",
+    "loadFailed": "לא הצלחנו לטעון את האפשרויות.",
+    "retry": "ניסיון נוסף"
   }
 }

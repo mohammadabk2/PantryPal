@@ -8,12 +8,14 @@ from sqlalchemy.orm import Session
 from app.database import get_db
 from app.dependencies import CurrentUser
 from app.models import DietaryRestriction, UserDietaryRestriction, UserFeatureWeight, UserTagWeight
+from app.recommendations.tags import SUGGESTED_TAGS
 from app.recommendations.weights import get_dietary_restrictions, get_feature_weights, get_tag_weights
 from app.schemas.preferences import (
     DietaryRestrictionsRead,
     DietaryRestrictionsUpdate,
     PreferenceOptions,
     PreferencesRead,
+    TagGroup,
     TagWeightRead,
     TagWeightUpdate,
 )
@@ -41,7 +43,10 @@ def _sorted(restrictions: set[DietaryRestriction]) -> list[DietaryRestriction]:
 @router.get("/preferences/options", response_model=PreferenceOptions)
 def preference_options():
     """Allowed values, so the client builds its choices from the server's list. No login needed."""
-    return PreferenceOptions(dietary_restrictions=list(DietaryRestriction))
+    return PreferenceOptions(
+        dietary_restrictions=list(DietaryRestriction),
+        tag_groups=[TagGroup(name=name, tags=tags) for name, tags in SUGGESTED_TAGS.items()],
+    )
 
 
 @router.get("/me/preferences", response_model=PreferencesRead)
