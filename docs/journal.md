@@ -60,3 +60,21 @@
 
 - Did market research into compotetors
 - Created this Journal
+
+## 12-11-26
+**Who** Mohammad, Raneen
+
+- Created and Merged pull requests into main
+ - the frontend setup
+ - Journal
+ - Price Collection
+
+## 13-11-26 - 15-11-26
+**Who** Mohammad
+
+- Cleaned project directory
+- added docker for database
+- Created the users, tags, weights and restrictions tables and Endpoints
+- Adds basic front-end support for testing
+- added Hebrew support
+
