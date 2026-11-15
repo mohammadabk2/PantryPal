@@ -19,7 +19,7 @@ class UserCreate(BaseModel):
 
 
 class UserRead(BaseModel):
-    """What the API sends back about a user. Never includes password_hash."""
+    """What the API sends back about a user."""
 
     model_config = ConfigDict(from_attributes=True)
 
