@@ -1,27 +1,17 @@
-"""Scoring factors, their default weights, and reading a user's personalized values.
+"""Default weights for the scoring factors, and reading a user's personalized values.
 
 A recipe's score for a user is roughly:
     score = Σ weight[feature] × feature_value(recipe, user)
 where features in NEGATIVE_FEATURES count against the recipe.
+The factors themselves are listed in Feature (app/models/user_feature_weight.py).
 """
 
 import uuid
-from enum import StrEnum
 
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
-from app.models import UserDietaryRestriction, UserFeatureWeight, UserTagWeight
-
-
-class Feature(StrEnum):
-    PANTRY = "pantry"  # share of the recipe's ingredients the user already has
-    EXPIRING = "expiring"  # uses ingredients that expire soon
-    LIKES = "likes"  # matches tags the user likes (see user_tag_weights)
-    RATING = "rating"  # similar to recipes the user rated highly
-    MISSING = "missing"  # number of ingredients the user would need to buy
-    COST = "cost"  # price of those missing ingredients
-
+from app.models import DietaryRestriction, Feature, UserDietaryRestriction, UserFeatureWeight, UserTagWeight
 
 # These lower the score instead of raising it.
 NEGATIVE_FEATURES = frozenset({Feature.MISSING, Feature.COST})
@@ -40,16 +30,6 @@ DEFAULT_FEATURE_WEIGHTS: dict[Feature, float] = {
 # Allowed range for user_tag_weights.weight (matches the database check).
 TAG_WEIGHT_MIN = -1.0
 TAG_WEIGHT_MAX = 1.0
-
-
-class DietaryRestriction(StrEnum):
-    VEGETARIAN = "vegetarian"
-    VEGAN = "vegan"
-    GLUTEN_FREE = "gluten_free"
-    DAIRY_FREE = "dairy_free"
-    NUT_FREE = "nut_free"
-    HALAL = "halal"
-    KOSHER = "kosher"
 
 
 def get_feature_weights(db: Session, user_id: uuid.UUID) -> dict[Feature, float]:

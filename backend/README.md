@@ -77,5 +77,11 @@ sudo docker compose down
 | GET    | `/api/health` | Health check           |
 | POST   | `/api/auth/register` | Create an account |
 | POST   | `/api/auth/login` | Log in, get a token |
-| GET    | `/api/auth/me` | The logged-in user (needs token) |
+| GET    | `/api/auth/me` | The logged-in user |
+| GET    | `/api/preferences/options` | Allowed dietary restrictions |
+| GET    | `/api/me/preferences` | The user's restrictions, tag weights and factor weights |
+| PUT    | `/api/me/preferences/dietary-restrictions` | Replace the restriction list, `{"restrictions": [...]}`|
+| PUT    | `/api/me/preferences/tags/{tag}` | Set how much the user likes a tag, `{"weight": -1 to 1}`|
+| DELETE | `/api/me/preferences/tags/{tag}` | Remove a tag opinion |
+| DELETE | `/api/me/preferences/feature-weights` | Reset learned factor weights to defaults |
 
