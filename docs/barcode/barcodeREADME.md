@@ -30,8 +30,11 @@ Paths below are relative to the repository root.
 | `client/src/components/BarcodeScanner.tsx` | Camera lifecycle, camera selection, local barcode decoding, image selection, manual barcode entry, and the `onScan` callback. No backend requests. |
 | `client/src/pages/BarcodeDemo.tsx` | Connects `onScan` to product lookup; manages lookup loading, results, and errors. |
 | `client/src/api/products.ts` | Defines the `Product` interface and `getProductByBarcode(barcode)`. |
-| `client/src/api/client.ts` | Provides `apiFetch`, API base URL handling, and `ApiError`. This demo helper currently sends GET requests only. |
+| `client/src/api/barcodeclient.ts` | Provides `apiFetch`, API base URL handling, and `ApiError`. This demo helper currently sends GET requests only. |
 | `client/src/main.tsx` | Registers the `/barcode-demo` route. |
+| `client/src/i18n/index.ts` | Configures language detection, persistence, and document direction. |
+| `client/src/locales/en/translation.json`, `client/src/locales/ar/translation.json` | English and Arabic UI translation strings. |
+| `client/src/components/LanguageSwitcher.tsx` | Language selector shown on the home page. The selected language is cached for later visits. |
 | `client/src/styles/BarcodeScanner.css` | Scanner controls, preview, upload area, and responsive styles. |
 | `client/src/styles/BarcodeDemo.css` | Page navigation, spacing, heading, and product result styling. |
 | `client/src/App.css`, `client/src/index.css` | Existing application/global styles, kept in their original locations. |
@@ -43,13 +46,11 @@ Paths below are relative to the repository root.
 ## 3. Complete data flow
 
 ```text
-Camera frames or selected image
-        |
-        v
-BarcodeScanner: decode locally in the browser
-        |
-        | onScan(barcode) -- a JavaScript callback, not an HTTP request
-        v
+Camera frames or selected image --decode locally--+
+                                                  +--> onScan(barcode)
+Manual entry --validate digits and length---------+         |
+                                                            | JavaScript callback, not an HTTP request
+                                                            v
 BarcodeDemo.handleScan(barcode)
         |
         v
@@ -68,9 +69,11 @@ PostgreSQL products table
 BarcodeDemo: display product or lookup error
 ```
 
-Camera frames and uploaded images stay in the browser. The product lookup sends
-only the decoded barcode in the URL. A SQL query from the backend to PostgreSQL
-is separate from the browser's HTTP request.
+Camera frames and uploaded images stay in the browser. Camera and image flows
+decode locally; manual entry validates the typed value without decoding it. All
+three flows pass the barcode string to the same lookup, which sends that value in
+the URL. A SQL query from the backend to PostgreSQL is separate from the browser's
+HTTP request.
 
 ## 4. Every scanner action
 
@@ -78,16 +81,17 @@ is separate from the browser's HTTP request.
 | --- | --- | --- | --- |
 | Open the page | Visit `/barcode-demo`. | Renders the scanner. Does not automatically start the camera or look up products. | No product/API request. Normal page and asset loading still occurs. |
 | Start camera | Click **Start camera** and grant permission. | `startCamera()` checks browser camera availability and secure context, initializes `Html5Qrcode`, and awaits `scanner.start(...)`. | No. The browser requests camera permission/access, not a backend endpoint. |
-| Read camera status | Look at the status badge. | `running` controls `Camera on` / `Ready to scan`. | No. |
+| Read camera status | Look at the status badge. | `loading` and `running` control `Working…`, `Camera on`, or `Ready to scan`. | No. |
 | List cameras | Start the camera successfully. | `Html5Qrcode.getCameras()` updates the local camera list. Enumeration errors are ignored. | No. |
 | Change camera | Stop scanning, select a camera, then click **Start camera** again. | Updates `cameraId`. The next start uses that ID. Automatic mode prefers the rear camera with `facingMode: "environment"`. | No. |
 | Stop camera | Click **Stop camera**. | Awaits `scanner.stop()`, sets `running` to `false`, and displays `Camera stopped`. | No. |
 | Detect a camera barcode | Hold a supported barcode in the scan area. | Decodes locally, blocks duplicate callbacks with `busyRef`, attempts to stop the camera, then calls `onScan(barcode)`. | The scanner itself sends none; the demo page then sends one product lookup. |
-| Select an image | Stop the camera and choose a file under **Upload a barcode image**. | Checks the image MIME type and uses ZXing to decode a temporary local image URL. | None until decoding succeeds. No image upload to the backend. |
+| Select an image | Stop the camera, expand **Have a photo? Upload a barcode image**, and choose a file. | Checks the image MIME type and uses ZXing to decode a temporary local image URL. | None until decoding succeeds. No image upload to the backend. |
 | Decode an image successfully | Choose a readable EAN-8/EAN-13 image. | Calls `onScan(barcode)`, revokes the temporary image URL, and resets the file input. | The demo page sends one product lookup. |
-| Enter a barcode manually | Enter 8 or 13 digits and select **Search**. | Validates the length and numeric characters, then calls `onScan(barcode)`. | The demo page sends one product lookup. |
+| Enter a barcode manually | Expand **Couldn’t scan? Enter the barcode manually**, enter 8 or 13 digits, and select **Search**. | Validates the length and numeric characters, then calls `onScan(barcode)`. It does not check the EAN check digit. | The demo page sends one product lookup. |
+| Change the interface language | Use the language selector on the home page, then open the scanner. | The UI supports English and Arabic. The selected language is stored in local storage and the document direction is updated for RTL. | No product/API request. |
 | Fail to decode an image | Select an unreadable or unsupported barcode image. | Displays a local decoding error and resets loading/file selection. | No product lookup. |
-| Receive a lookup result | Scan successfully and wait. | The page shows the returned name and barcode, a not-found message, or a lookup failure. | This is the response to the existing GET, not another request. |
+| Receive a lookup result | Scan a barcode or submit a manual entry, then wait. | The page shows the returned name and barcode, a not-found message, or a lookup failure. | This is the response to the existing GET, not another request. |
 | Leave the page | Navigate away/unmount the scanner. | The effect cleanup attempts to stop the scanner. | No. |
 
 ### Camera status and local state
@@ -121,7 +125,9 @@ GET /api/products/7290000000000
 ```
 
 This request has no JSON body and the demo helper sends no authentication token.
-The camera and image flows use the same function.
+Camera, image, and manual-entry flows use the same lookup function. The camera and
+image flows provide a locally decoded barcode; manual entry provides the validated
+text value.
 
 The backend executes:
 
@@ -391,9 +397,10 @@ If that barcode already exists, the endpoint returns `409`. Look it up:
 curl -i http://localhost:3000/api/products/4006381333931
 ```
 
-Then upload an image or scan an EAN-13 barcode encoding that same number. The page
-should display `Demo product` (or the existing product name). In browser DevTools,
-open **Network** and filter for `products` to see the GET request and response.
+Then upload an image, scan an EAN-13 barcode, or expand the manual-entry panel and
+enter `4006381333931`. The page should display `Demo product` (or the existing
+product name). In browser DevTools, open **Network** and filter for `products` to
+see the GET request and response.
 
 To test inventory manually, replace `1` below with an actual product ID returned
 by your database. This request writes an inventory row and requires the inventory
@@ -417,16 +424,16 @@ import BarcodeScanner from './components/BarcodeScanner'
 export default function Example() {
   return (
     <BarcodeScanner
-      onScan={(barcode) => console.log('Decoded:', barcode)}
+      onScan={(barcode) => console.log('Barcode:', barcode)}
       disabled={false}
     />
   )
 }
 ```
 
-- `onScan` is required and receives the decoded barcode as a string.
-- `disabled` is optional and defaults to `false`; it blocks starting/choosing images.
-  It does not automatically stop an already-running camera.
+- `onScan` is required and receives a decoded or manually entered barcode as a string.
+- `disabled` is optional and defaults to `false`; it disables camera startup, image
+  upload, and manual entry. It does not automatically stop an already-running camera.
 - The consumer decides whether to look up a product, fill a form, or do something else.
 - Reuse requires React, `html5-qrcode`, `@zxing/browser`, `@zxing/library`, and the scanner CSS.
 - Element IDs use React `useId`, avoiding fixed-ID collisions between instances.
