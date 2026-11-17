@@ -1,5 +1,7 @@
+import { useTranslation } from 'react-i18next'
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
+import "../styles/BarcodeScanner.css";
 import { Html5Qrcode,Html5QrcodeSupportedFormats } from "html5-qrcode";
 import { BrowserMultiFormatReader } from "@zxing/browser";
 import { BarcodeFormat, DecodeHintType } from "@zxing/library";
@@ -10,12 +12,18 @@ interface BarcodeScannerProps {
 }
 
 export default function BarcodeScanner({ onScan, disabled = false }: BarcodeScannerProps) {
+  const { t } = useTranslation()
+  const readerId = useId();
+  const uploadId = useId();
+  const [cameras, setCameras] = useState<{ id: string; label: string }[]>([]);
+  const [cameraId, setCameraId] = useState("");
   const scannerRef = useRef<Html5Qrcode | null>(null);
   const busyRef = useRef(false);
 
   const [running, setRunning] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [message, setMessage] = useState("");
+  const [message, setMessage] = useState<{ key: keyof typeof import("../locales/en/translation.json").barcode.messages; barcode?: string } | null>(null);
+  const [manualBarcode, setManualBarcode] = useState("");
 
   useEffect(() => {
     return () => {
@@ -31,19 +39,17 @@ export default function BarcodeScanner({ onScan, disabled = false }: BarcodeScan
     if (disabled || loading || running) return;
 
     setLoading(true);
-    setMessage("");
+    setMessage(null);
     busyRef.current = false;
 
     try {
-      const cameras = await Html5Qrcode.getCameras();
-
-      console.log("Available cameras:", cameras);
-
-      if (cameras.length === 0) {
-        throw new Error("No camera found");
+      if (!window.isSecureContext || !navigator.mediaDevices?.getUserMedia) {
+        setMessage({ key: "secure" });
+        return;
       }
+      scannerRef.current?.clear();
 
-      const scanner = new Html5Qrcode("barcode-reader", {
+      const scanner = new Html5Qrcode(readerId, {
         formatsToSupport: [
           Html5QrcodeSupportedFormats.EAN_8,
           Html5QrcodeSupportedFormats.EAN_13,
@@ -54,16 +60,19 @@ export default function BarcodeScanner({ onScan, disabled = false }: BarcodeScan
       scannerRef.current = scanner;
 
       await scanner.start(
-        cameras[0].id,
+        cameraId || { facingMode: "environment" },
         {
           fps: 10,
-          qrbox: { width: 250, height: 150 },
+          qrbox: (width, height) => ({
+            width: Math.max(1, Math.floor(Math.min(300, width * 0.85))),
+            height: Math.max(1, Math.floor(Math.min(150, height * 0.65))),
+          }),
         },
         async (barcode) => {
           if (busyRef.current) return;
           busyRef.current = true;
 
-          setMessage(`Scanned: ${barcode}`);
+          setMessage({ key: "scanned", barcode });
 
           await scanner.stop().catch(() => {});
           setRunning(false);
@@ -74,12 +83,14 @@ export default function BarcodeScanner({ onScan, disabled = false }: BarcodeScan
       );
 
       setRunning(true);
-      setMessage("Camera is ready. Scan a barcode.");
+      setMessage({ key: "cameraReady" });
+      void Html5Qrcode.getCameras().then(setCameras).catch(() => {});
     } catch (error) {
       console.error("Camera error:", error);
-      setMessage(
-        error instanceof Error ? error.message : String(error)
-      );
+      const name = error instanceof Error ? error.name : "";
+      setMessage({ key: name === "NotAllowedError" ? "denied"
+        : name === "NotFoundError" ? "noCamera"
+        : name === "NotReadableError" ? "unavailable" : "cameraError" });
     } finally {
       setLoading(false);
     }
@@ -92,7 +103,7 @@ export default function BarcodeScanner({ onScan, disabled = false }: BarcodeScan
     try {
       await scanner.stop();
       setRunning(false);
-      setMessage("Camera stopped");
+      setMessage({ key: "stopped" });
     } catch (error) {
       console.error("Stop error:", error);
     }
@@ -105,17 +116,17 @@ export default function BarcodeScanner({ onScan, disabled = false }: BarcodeScan
     if (!file) return;
 
     if (!file.type.startsWith("image/")) {
-      setMessage("Please select an image file");
+      setMessage({ key: "imageOnly" });
       return;
     }
 
     if (disabled || running || loading) {
-      setMessage("Stop the camera before uploading an image");
+      setMessage({ key: "stopFirst" });
       return;
     }
 
     setLoading(true);
-    setMessage("Scanning uploaded image...");
+    setMessage({ key: "scanningImage" });
 
     let imageUrl: string | undefined;
     try {
@@ -129,22 +140,22 @@ export default function BarcodeScanner({ onScan, disabled = false }: BarcodeScan
 
       imageUrl = URL.createObjectURL(file);
       const img = new Image();
-      img.src = imageUrl;
 
       await new Promise<void>((resolve, reject) => {
         img.onload = () => resolve();
         img.onerror = () => reject(new Error("Could not load image"));
+        img.src = imageUrl!;
       });
 
       const result = await reader.decodeFromImageElement(img);
       const barcode = result.getText();
 
-      setMessage(`Scanned barcode: ${barcode}`);
+      setMessage({ key: "scanned", barcode });
 
       onScan(barcode);
     } catch (error) {
       console.error("Upload scan error:", error);
-      setMessage("Could not detect a barcode from the uploaded image");
+      setMessage({ key: "noBarcode" });
     } finally {
       if (imageUrl) URL.revokeObjectURL(imageUrl);
       setLoading(false);
@@ -152,59 +163,98 @@ export default function BarcodeScanner({ onScan, disabled = false }: BarcodeScan
     }
   }
 
+  function submitManualBarcode(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    if (disabled || running || loading) return;
+
+    const barcode = manualBarcode.trim();
+    if (!/^(?:\d{8}|\d{13})$/.test(barcode)) {
+      setMessage({ key: "invalid" });
+      return;
+    }
+
+    setMessage({ key: "searching", barcode });
+    setManualBarcode("");
+    onScan(barcode);
+  }
+
   return (
-    <div style={{ padding: 20, maxWidth: 500 }}>
-      <h2>PantryPal Barcode Scanner</h2>
-
-      <button
-        onClick={startCamera}
-        disabled={disabled || running || loading}
-      >
-        {loading ? "Opening..." : "Start Camera"}
-      </button>
-
-      <button onClick={stopCamera} disabled={!running}>
-        Stop Camera
-      </button>
-
-
-      <div style={{ marginTop: 20 }}>
-        <label htmlFor="barcode-upload">
-          <strong>Upload Barcode Image</strong>
-        </label>
-
-        <input
-          id="barcode-upload"
-          type="file"
-          accept="image/*"
-          disabled={disabled || running || loading}
-          onChange={uploadBarcodeImage}
-          style={{ display: "block", marginTop: 10 }}
-        />
-
-        <div
-          id="barcode-image-reader"
-          style={{
-            width: "100%",
-            maxWidth: 400,
-            marginTop: 15,
-          }}
-        />
+    <section className={`barcode-scanner${running ? " barcode-scanner--running" : ""}`} aria-label={t("barcode.title")}>
+      <div className="barcode-scanner__heading">
+        <div><span className="barcode-scanner__eyebrow">{t("barcode.eyebrow")}</span><h2>{t("barcode.title")}</h2></div>
+        <span className="barcode-scanner__badge"><i aria-hidden="true" />{t(loading ? "barcode.working" : running ? "barcode.cameraOn" : "barcode.ready")}</span>
       </div>
 
+      <div className="barcode-scanner__viewfinder">
+        <div id={readerId} className="barcode-scanner__reader" />
+        {!running && !loading && (
+          <div className="barcode-scanner__placeholder" aria-hidden="true">
+            <div className="barcode-scanner__target"><div className="barcode-scanner__bars" /></div>
+            <span>{t("barcode.frame")}</span>
+          </div>
+        )}
+      </div>
 
-      <div
-        id="barcode-reader"
-        style={{
-          width: "100%",
-          minHeight: 250,
-          marginTop: 20,
-        }}
-      />
+      <p className="barcode-scanner__hint">{t("barcode.hint")}</p>
 
-      <p>{message}</p>
+      {cameras.length > 1 && (
+        <div className="barcode-scanner__camera-choice">
+          <label htmlFor={`${readerId}-camera`}>{t("barcode.camera")}</label>
+          <select id={`${readerId}-camera`} value={cameraId} disabled={running || loading} onChange={(event) => setCameraId(event.target.value)}>
+            <option value="">{t("barcode.automatic")}</option>
+            {cameras.map((camera, index) => <option key={camera.id} value={camera.id}>{camera.label || t("barcode.cameraNumber", { number: index + 1 })}</option>)}
+          </select>
+          <small>{t("barcode.switchHint")}</small>
+        </div>
+      )}
+      <div className="barcode-scanner__actions">
+        <button className="barcode-scanner__button" onClick={startCamera} disabled={disabled || running || loading}>
+          {t(loading ? "barcode.wait" : "barcode.start")}
+        </button>
+        <button className="barcode-scanner__button barcode-scanner__button--secondary" onClick={stopCamera} disabled={!running}>
+          {t("barcode.stop")}
+        </button>
+      </div>
 
+      <details className="barcode-scanner__manual-disclosure">
+        <summary>{t("barcode.manualToggle")}</summary>
+        <form className="barcode-scanner__manual" onSubmit={submitManualBarcode}>
+          <label htmlFor={`${readerId}-manual`}>{t("barcode.manualLabel")}</label>
+          <div className="barcode-scanner__manual-row">
+            <input
+              id={`${readerId}-manual`}
+              type="text"
+              inputMode="numeric"
+              pattern="[0-9]*"
+              maxLength={13}
+              autoComplete="off"
+              placeholder={t("barcode.placeholder")}
+              value={manualBarcode}
+              onChange={(event) => setManualBarcode(event.target.value)}
+              disabled={disabled || running || loading}
+            />
+            <button
+              className="barcode-scanner__button"
+              type="submit"
+              disabled={disabled || running || loading}
+            >
+              {t("barcode.search")}
+            </button>
+          </div>
+        </form>
+        <p className="barcode-scanner__formats">{t("barcode.formats")}</p>
+      </details>
 
-    </div>
+      <details className="barcode-scanner__manual-disclosure">
+        <summary>{t("barcode.uploadToggle")}</summary>
+        <div className="barcode-scanner__upload">
+          <label htmlFor={uploadId}>{t("barcode.uploadLabel")}</label>
+          <p>{t("barcode.uploadHint")}</p>
+          <input id={uploadId} type="file" accept="image/*" disabled={disabled || running || loading} onChange={uploadBarcodeImage} />
+        </div>
+      </details>
+
+      <p className="barcode-scanner__message" role="status">{message && t(`barcode.messages.${message.key}`, { barcode: message.barcode })}</p>
+    </section>
   );
 }

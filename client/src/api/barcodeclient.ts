@@ -1,4 +1,6 @@
 // Same API module layout as database-setup; implementation for the barcode demo.
+
+// client.ts — The general code: the server address, running fetch, handling errors, and converting the response to JSON.
 const API_URL = (import.meta.env.VITE_API_URL ?? '/api').replace(/\/$/, '')
 
 export class ApiError extends Error {

@@ -1,4 +1,4 @@
-import { apiFetch } from './client'
+import { apiFetch } from './barcodeclient'
 
 export interface Product {
   id: number
