@@ -60,3 +60,14 @@
 
 - Did market research into compotetors
 - Created this Journal
+
+## 17-11-26
+**Who:** Raneen
+
+- Connected the barcode scanner and its status/error messages to the app's English and Arabic translations
+- Separated the barcode scanner component from the API request logic for product lookup
+- Consolidated barcode work into feature/barcode-product-lookup
+- Verified the frontend with successful build and lint checks
+
+**Problems / decisions**
+- Moved hard-coded barcode texts into translation files so the scanner follows the language selected in the app
