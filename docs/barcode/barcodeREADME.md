@@ -10,13 +10,14 @@ the database.
 - Preference for a rear-facing camera and a camera selector on devices with multiple cameras.
 - A responsive scanner layout, touch-friendly controls, and a scan frame sized to the video.
 - Local camera status and error messages.
-- Product lookup through the demo Express API and PostgreSQL database.
+- Product lookup through the demo Express API and PostgreSQL database, with an
+  Open Food Facts fallback when a barcode is absent from the local database.
 - A result card displaying the product name and barcode.
 - Backend endpoints for creating products and reading/adding inventory, available for manual requests.
 
 The scan page **does not create products or add scanned products to inventory**.
-It does not query an external product catalog. A product must already exist in the
-connected database for lookup to succeed.
+If a product is absent from the connected database, the backend looks it up in
+Open Food Facts and returns its name without saving it to the local database.
 
 The directory layout follows the organization of `database-setup`, but this demo
 uses its own Express backend, not that branch's Python backend or authentication.
@@ -39,7 +40,7 @@ Paths below are relative to the repository root.
 | `client/src/styles/BarcodeDemo.css` | Page navigation, spacing, heading, and product result styling. |
 | `client/src/App.css`, `client/src/index.css` | Existing application/global styles, kept in their original locations. |
 | `client/vite.config.ts` | Forwards development requests beginning with `/api` to `http://localhost:3000`. |
-| `backend/src/server.ts` | Express routes, request validation, SQL queries, and server startup. |
+| `backend/src/server.ts` | Express routes, request validation, SQL queries, Open Food Facts fallback, and server startup. |
 | `backend/src/db.ts` | Loads environment variables and creates the PostgreSQL connection pool. |
 | `backend/.env` | Local database connection settings. Ignored by Git. |
 
@@ -63,6 +64,10 @@ Vite development proxy -> Express backend on port 3000
         | Parameterized SQL query through the pg Pool
         v
 PostgreSQL products table
+        |
+        | If absent, GET request to Open Food Facts
+        v
+Open Food Facts product catalog
         |
         | JSON product record, or HTTP error
         v
@@ -127,33 +132,39 @@ GET /api/products/7290000000000
 This request has no JSON body and the demo helper sends no authentication token.
 Camera, image, and manual-entry flows use the same lookup function. The camera and
 image flows provide a locally decoded barcode; manual entry provides the validated
-text value.
+text value. The backend checks PostgreSQL first and calls Open Food Facts only if
+the local product table has no matching row. The external result is returned to
+the page but is not inserted into PostgreSQL.
 
-The backend executes:
+The backend first executes:
 
 ```sql
 SELECT * FROM products WHERE barcode = $1
 ```
 
 The barcode is passed separately as the query parameter, rather than interpolated
-into the SQL text.
+into the SQL text. If there is no matching row, the backend requests that barcode
+from `https://world.openfoodfacts.org/api/v2/product/{barcode}.json`, asking for
+the product name in the available default or English field.
 
 ### Responses
 
 | Status | Backend response | Page behavior |
 | --- | --- | --- |
-| `200` | First matching product row as JSON. | Displays product name and barcode, plus `Product found!`. |
-| `404` | `{ "error": "Product not found" }` | Displays `Barcode ...: Product not found`. |
+| `200` | Matching database row, or an Open Food Facts result with `barcode` and `name`. | Displays product name and barcode. |
+| `404` | Neither the database nor Open Food Facts has a named product for the barcode. | Displays `Barcode ...: Product not found`. |
 | `500` | `{ "error": "Server error" }` | Displays a general lookup failure. Details are logged by the backend. |
+| `502` | Open Food Facts is unreachable, times out, or returns an unsuccessful HTTP response. | Displays a general lookup failure; details are logged by the backend. |
 | Network failure | No HTTP response; `ApiError` has status `0`. | Displays a general lookup failure. |
 
-Example success body (the server may return additional database columns):
+Example success body for a database result (the server may return additional columns):
 
 ```json
 { "id": 1, "barcode": "7290000000000", "name": "Milk" }
 ```
 
-The frontend expects `id: number`, `barcode: string`, and `name: string`.
+The frontend expects `barcode: string` and `name: string`. Only database results
+include an `id`.
 The TypeScript interface documents this shape but does not validate JSON at runtime.
 The HTTP helper uses the response status text for non-success responses; it does
 not currently extract the backend JSON `error` message. Invalid JSON on a successful
@@ -399,8 +410,10 @@ curl -i http://localhost:3000/api/products/4006381333931
 
 Then upload an image, scan an EAN-13 barcode, or expand the manual-entry panel and
 enter `4006381333931`. The page should display `Demo product` (or the existing
-product name). In browser DevTools, open **Network** and filter for `products` to
-see the GET request and response.
+product name). For a barcode that is not in the local database but exists in Open
+Food Facts, the page displays the external product name the same way. In browser
+DevTools, open **Network** and filter for `products` to see the GET request and
+response.
 
 To test inventory manually, replace `1` below with an actual product ID returned
 by your database. This request writes an inventory row and requires the inventory
@@ -448,7 +461,8 @@ export default function Example() {
 | Permission denied | Allow camera access in browser/site settings or use an image. |
 | Camera busy | Close other apps/tabs using the camera and retry. |
 | Image cannot be decoded | Use a supported EAN-8/EAN-13 barcode with clear focus, full bars, and good lighting. The code checks image MIME type; browser image format support still applies. |
-| Product returns `404` | Check that the exact barcode string exists in the connected database. A successful decode does not imply a known product. |
+| Product returns `404` | Check that the barcode exists in either the connected database or Open Food Facts and that the external entry has a product name. A successful decode does not imply a known product. |
+| Product lookup returns `502` | Check backend connectivity to `world.openfoodfacts.org`; the local database lookup remains available, but missing products require the external service. |
 | Health returns `500` | Check the backend environment, PostgreSQL service, credentials, reachability, and any required TLS settings. |
 | Health succeeds but lookup returns `500` | Inspect backend logs and verify the `products` table and its schema. |
 | Lookup fails only through frontend | Verify Vite proxy destination, API base URL, backend port, and CORS if using another origin. |

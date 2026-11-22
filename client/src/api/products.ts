@@ -1,7 +1,7 @@
 import { apiFetch } from './barcodeclient'
 
 export interface Product {
-  id: number
+  id?: number
   barcode: string
   name: string
 }

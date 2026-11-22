@@ -4,6 +4,8 @@ import { pool } from "./db.js";
 const app = express();
 app.use(express.json());
 
+const OPEN_FOOD_FACTS_API = "https://world.openfoodfacts.org/api/v2/product";
+
 // Check database connection
 app.get("/api/health", async (_req, res) => {
   try {
@@ -31,12 +33,46 @@ app.get("/api/products/:barcode", async (req, res) => {
       [barcode]
     );
 
-    if (result.rows.length === 0) {
-      res.status(404).json({ error: "Product not found" });
+    if (result.rows.length > 0) {
+      res.json(result.rows[0]);
       return;
     }
 
-    res.json(result.rows[0]);
+    try {
+      const response = await fetch(
+        `${OPEN_FOOD_FACTS_API}/${encodeURIComponent(barcode)}.json?fields=product_name,product_name_en`,
+        {
+          headers: { "User-Agent": "PantryPal/1.0 (barcode lookup)" },
+          signal: AbortSignal.timeout(8000)
+        }
+      );
+
+      if (!response.ok) {
+        console.error(`Open Food Facts returned HTTP ${response.status}`);
+        res.status(502).json({ error: "External product lookup failed" });
+        return;
+      }
+
+      const data = await response.json() as {
+        status?: number;
+        product?: {
+          product_name?: unknown;
+          product_name_en?: unknown;
+        };
+      };
+      const name = [data.product?.product_name, data.product?.product_name_en]
+        .find((value): value is string => typeof value === "string" && value.trim().length > 0);
+
+      if (data.status !== 1 || !name) {
+        res.status(404).json({ error: "Product not found" });
+        return;
+      }
+
+      res.json({ barcode, name: name.trim() });
+    } catch (error) {
+      console.error("Open Food Facts lookup failed:", error);
+      res.status(502).json({ error: "External product lookup failed" });
+    }
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Server error" });
