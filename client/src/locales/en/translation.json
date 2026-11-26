@@ -7,12 +7,97 @@
     "welcome": "Welcome to PantryPal",
     "login": "Login",
     "noAccount": "Don't have an account?",
-    "signUp": "Sign Up"
+    "signUp": "Sign Up",
+    "loggedInAs": "Signed in as {{name}}",
+    "logout": "Log out"
   },
   "login": {
     "title": "Login",
-    "formPlaceholder": "Login form goes here.",
-    "backHome": "Back to home"
+    "emailLabel": "Email",
+    "passwordLabel": "Password",
+    "submit": "Log in",
+    "submitting": "Logging in…",
+    "backHome": "Back to home",
+    "errors": {
+      "invalidCredentials": "Incorrect email or password.",
+      "accountDisabled": "This account is disabled.",
+      "serverUnreachable": "Can't reach the server. Please try again.",
+      "generic": "Something went wrong. Please try again."
+    }
+  },
+  "signup": {
+    "title": "Sign Up",
+    "stepOf": "Step {{current}} of {{total}}",
+    "back": "Back",
+    "next": "Continue",
+    "submit": "Create account",
+    "submitting": "Creating account…",
+    "showPassword": "Show",
+    "hidePassword": "Hide",
+    "haveAccount": "Already have an account?",
+    "backHome": "Back to home",
+    "steps": {
+      "name": {
+        "question": "What should we call you?"
+      },
+      "email": {
+        "question": "Nice to meet you, {{name}}! What's your email?"
+      },
+      "password": {
+        "question": "Pick a password",
+        "hint": "At least 8 characters"
+      },
+      "tags": {
+        "question": "What do you like to eat?",
+        "hint": "Pick as many as you like, or none. You can change these later."
+      }
+    },
+    "errors": {
+      "nameRequired": "Please enter your name.",
+      "emailInvalid": "Please enter a valid email address.",
+      "passwordTooShort": "Your password needs at least 8 characters.",
+      "emailTaken": "An account with this email already exists.",
+      "invalidInput": "Please check your details and try again.",
+      "serverUnreachable": "Can't reach the server. Please try again.",
+      "generic": "Something went wrong. Please try again."
+    }
+  },
+  "tags": {
+    "middle_eastern": "Middle Eastern",
+    "mediterranean": "Mediterranean",
+    "italian": "Italian",
+    "asian": "Asian",
+    "indian": "Indian",
+    "mexican": "Mexican",
+    "breakfast": "Breakfast",
+    "salads": "Salads",
+    "soups": "Soups",
+    "baking": "Baking",
+    "desserts": "Desserts",
+    "quick": "Quick meals",
+    "healthy": "Healthy",
+    "spicy": "Spicy",
+    "comfort_food": "Comfort food",
+    "chicken": "Chicken",
+    "beef": "Beef",
+    "fish": "Fish",
+    "eggs": "Eggs",
+    "cheese": "Cheese",
+    "pasta": "Pasta",
+    "rice": "Rice",
+    "legumes": "Legumes",
+    "vegetables": "Vegetables"
+  },
+  "tagGroups": {
+    "cuisine": "Cuisines",
+    "dish": "Dishes",
+    "style": "Style",
+    "ingredient": "Ingredients"
+  },
+  "tagPicker": {
+    "loading": "Loading options…",
+    "loadFailed": "Couldn't load the options.",
+    "retry": "Try again"
   },
   "barcode": {
     "eyebrow": "PRODUCT LOOKUP",

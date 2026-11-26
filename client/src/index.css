@@ -1,3 +1,9 @@
+/*
+ * Theme: colors, fonts and base element styles.
+ * Use these variables everywhere instead of writing colors directly,
+ * so light/dark mode and any future rebrand only change this file.
+ */
+
 :root {
   --text: #6b6375;
   --text-h: #08060d;
@@ -7,9 +13,13 @@
   --accent: #aa3bff;
   --accent-bg: rgba(170, 59, 255, 0.1);
   --accent-border: rgba(170, 59, 255, 0.5);
-  --social-bg: rgba(244, 243, 236, 0.5);
+  --on-accent: #fff; /* text on an --accent background */
+  --error: #c5221f;
+  --success: #188038;
   --shadow:
     rgba(0, 0, 0, 0.1) 0 10px 15px -3px, rgba(0, 0, 0, 0.05) 0 4px 6px -2px;
+
+  --radius: 8px;
 
   --sans: system-ui, 'Segoe UI', Roboto, sans-serif;
   --heading: system-ui, 'Segoe UI', Roboto, sans-serif;
@@ -40,14 +50,18 @@
     --accent: #c084fc;
     --accent-bg: rgba(192, 132, 252, 0.15);
     --accent-border: rgba(192, 132, 252, 0.5);
-    --social-bg: rgba(47, 48, 58, 0.5);
+    --on-accent: #16171d;
+    --error: #f28b82;
+    --success: #81c995;
     --shadow:
       rgba(0, 0, 0, 0.4) 0 10px 15px -3px, rgba(0, 0, 0, 0.25) 0 4px 6px -2px;
   }
+}
 
-  #social .button-icon {
-    filter: invert(1) brightness(2);
-  }
+/* Base elements */
+
+body {
+  margin: 0;
 }
 
 #root {
@@ -60,10 +74,6 @@
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
-}
-
-body {
-  margin: 0;
 }
 
 h1,
@@ -82,6 +92,7 @@ h1 {
     margin: 20px 0;
   }
 }
+
 h2 {
   font-size: 24px;
   line-height: 118%;
@@ -91,21 +102,18 @@ h2 {
     font-size: 20px;
   }
 }
+
 p {
   margin: 0;
 }
 
-code,
-.counter {
-  font-family: var(--mono);
-  display: inline-flex;
-  border-radius: 4px;
-  color: var(--text-h);
-}
-
 code {
+  font-family: var(--mono);
   font-size: 15px;
   line-height: 135%;
+  display: inline-flex;
   padding: 4px 8px;
+  border-radius: 4px;
+  color: var(--text-h);
   background: var(--code-bg);
 }

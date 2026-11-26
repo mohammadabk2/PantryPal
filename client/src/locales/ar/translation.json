@@ -7,12 +7,97 @@
     "welcome": "مرحباً بك في PantryPal",
     "login": "تسجيل الدخول",
     "noAccount": "ليس لديك حساب؟",
-    "signUp": "إنشاء حساب"
+    "signUp": "إنشاء حساب",
+    "loggedInAs": "تم تسجيل الدخول باسم {{name}}",
+    "logout": "تسجيل الخروج"
   },
   "login": {
     "title": "تسجيل الدخول",
-    "formPlaceholder": "نموذج تسجيل الدخول هنا.",
-    "backHome": "العودة إلى الصفحة الرئيسية"
+    "emailLabel": "البريد الإلكتروني",
+    "passwordLabel": "كلمة المرور",
+    "submit": "تسجيل الدخول",
+    "submitting": "جارٍ تسجيل الدخول…",
+    "backHome": "العودة إلى الصفحة الرئيسية",
+    "errors": {
+      "invalidCredentials": "البريد الإلكتروني أو كلمة المرور غير صحيحة.",
+      "accountDisabled": "هذا الحساب معطّل.",
+      "serverUnreachable": "تعذّر الاتصال بالخادم. يرجى المحاولة مرة أخرى.",
+      "generic": "حدث خطأ ما. يرجى المحاولة مرة أخرى."
+    }
+  },
+  "signup": {
+    "title": "إنشاء حساب",
+    "stepOf": "الخطوة {{current}} من {{total}}",
+    "back": "رجوع",
+    "next": "متابعة",
+    "submit": "إنشاء الحساب",
+    "submitting": "جارٍ إنشاء الحساب…",
+    "showPassword": "إظهار",
+    "hidePassword": "إخفاء",
+    "haveAccount": "لديك حساب بالفعل؟",
+    "backHome": "العودة إلى الصفحة الرئيسية",
+    "steps": {
+      "name": {
+        "question": "ماذا نناديك؟"
+      },
+      "email": {
+        "question": "تشرّفنا بمعرفتك يا {{name}}! ما بريدك الإلكتروني؟"
+      },
+      "password": {
+        "question": "اختر كلمة مرور",
+        "hint": "8 أحرف على الأقل"
+      },
+      "tags": {
+        "question": "ماذا تحب أن تأكل؟",
+        "hint": "اختر ما تشاء، أو لا شيء. يمكنك تغيير ذلك لاحقاً."
+      }
+    },
+    "errors": {
+      "nameRequired": "يرجى إدخال اسمك.",
+      "emailInvalid": "يرجى إدخال بريد إلكتروني صحيح.",
+      "passwordTooShort": "يجب أن تتكون كلمة المرور من 8 أحرف على الأقل.",
+      "emailTaken": "يوجد حساب بهذا البريد الإلكتروني بالفعل.",
+      "invalidInput": "يرجى التحقق من بياناتك والمحاولة مرة أخرى.",
+      "serverUnreachable": "تعذّر الاتصال بالخادم. يرجى المحاولة مرة أخرى.",
+      "generic": "حدث خطأ ما. يرجى المحاولة مرة أخرى."
+    }
+  },
+  "tags": {
+    "middle_eastern": "شرق أوسطي",
+    "mediterranean": "متوسطي",
+    "italian": "إيطالي",
+    "asian": "آسيوي",
+    "indian": "هندي",
+    "mexican": "مكسيكي",
+    "breakfast": "فطور",
+    "salads": "سلطات",
+    "soups": "شوربات",
+    "baking": "مخبوزات",
+    "desserts": "حلويات",
+    "quick": "وجبات سريعة التحضير",
+    "healthy": "صحي",
+    "spicy": "حار",
+    "comfort_food": "أكلات بيتية",
+    "chicken": "دجاج",
+    "beef": "لحم بقر",
+    "fish": "سمك",
+    "eggs": "بيض",
+    "cheese": "أجبان",
+    "pasta": "معكرونة",
+    "rice": "أرز",
+    "legumes": "بقوليات",
+    "vegetables": "خضار"
+  },
+  "tagGroups": {
+    "cuisine": "المطابخ",
+    "dish": "الأطباق",
+    "style": "الأسلوب",
+    "ingredient": "المكونات"
+  },
+  "tagPicker": {
+    "loading": "جارٍ تحميل الخيارات…",
+    "loadFailed": "تعذّر تحميل الخيارات.",
+    "retry": "إعادة المحاولة"
   },
   "barcode": {
     "eyebrow": "البحث عن منتج",

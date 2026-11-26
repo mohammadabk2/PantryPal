@@ -61,6 +61,24 @@
 - Did market research into compotetors
 - Created this Journal
 
+## 12-11-26
+**Who** Mohammad, Raneen
+
+- Created and Merged pull requests into main
+ - the frontend setup
+ - Journal
+ - Price Collection
+
+## 13-11-26 - 15-11-26
+**Who** Mohammad
+
+- Cleaned project directory
+- added docker for database
+- Created the users, tags, weights and restrictions tables and Endpoints
+- Adds basic front-end support for testing
+- added Hebrew support
+
+
 ## 17-11-26
 **Who:** Raneen
 
@@ -81,6 +99,7 @@
 - Verified the Open Food Facts response with a known barcode and passed frontend build/lint and backend TypeScript checks
 
 ## 26-11-26
+**Who:** Raneen
 
 - Replaced the barcode demo's Express backend with a Python FastAPI server while keeping the API routes used by the React frontend
 - Removed database access from the barcode demo; product lookups now go directly to Open Food Facts and are not saved
