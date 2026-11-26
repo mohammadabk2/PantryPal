@@ -13,4 +13,6 @@ __all__ = [
     "UserDietaryRestriction",
     "UserFeatureWeight",
     "UserTagWeight",
+    ##add by raneen 
+    "PantryItem",
 ]
