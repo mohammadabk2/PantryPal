@@ -1,0 +1,8 @@
+# Database migrations
+
+Database schema changes are managed with Alembic.
+
+Run commands from the `backend/` directory with the virtual environment active:
+- Create a migration: `alembic revision --autogenerate -m "describe the change"`
+- Review the generated migration in `migrations/versions/`
+- Apply migrations: `alembic upgrade head`
