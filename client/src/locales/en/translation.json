@@ -9,6 +9,7 @@
     "noAccount": "Don't have an account?",
     "signUp": "Sign Up",
     "loggedInAs": "Signed in as {{name}}",
+    "pantry": "My pantry",
     "logout": "Log out"
   },
   "login": {
@@ -23,6 +24,33 @@
       "accountDisabled": "This account is disabled.",
       "serverUnreachable": "Can't reach the server. Please try again.",
       "generic": "Something went wrong. Please try again."
+    }
+  },
+  "pantry": {
+    "title": "My pantry",
+    "backHome": "Back to home",
+    "addTitle": "Add an item",
+    "editTitle": "Edit item",
+    "itemsTitle": "Pantry items",
+    "nameLabel": "Item name",
+    "quantityLabel": "Quantity",
+    "unitLabel": "Unit",
+    "expirationDateLabel": "Expiration date",
+    "barcodeLabel": "Barcode",
+    "add": "Add item",
+    "save": "Save changes",
+    "saving": "Saving…",
+    "cancel": "Cancel",
+    "edit": "Edit",
+    "delete": "Delete",
+    "deleting": "Deleting…",
+    "loading": "Loading pantry items…",
+    "empty": "Your pantry is empty.",
+    "noExpiry": "No expiration date",
+    "errors": {
+      "loadFailed": "Couldn't load pantry items. Please try again.",
+      "saveFailed": "Couldn't save the item. Please try again.",
+      "deleteFailed": "Couldn't delete the item. Please try again."
     }
   },
   "signup": {

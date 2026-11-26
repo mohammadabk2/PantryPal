@@ -9,6 +9,7 @@
     "noAccount": "אין לך חשבון?",
     "signUp": "הרשמה",
     "loggedInAs": "התחברת בתור {{name}}",
+    "pantry": "המזווה שלי",
     "logout": "התנתקות"
   },
   "login": {
@@ -23,6 +24,33 @@
       "accountDisabled": "החשבון הזה מושבת.",
       "serverUnreachable": "אין חיבור לשרת. כדאי לנסות שוב.",
       "generic": "משהו השתבש. כדאי לנסות שוב."
+    }
+  },
+  "pantry": {
+    "title": "המזווה שלי",
+    "backHome": "חזרה לדף הבית",
+    "addTitle": "הוספת פריט",
+    "editTitle": "עריכת פריט",
+    "itemsTitle": "פריטי המזווה",
+    "nameLabel": "שם הפריט",
+    "quantityLabel": "כמות",
+    "unitLabel": "יחידת מידה",
+    "expirationDateLabel": "תאריך תפוגה",
+    "barcodeLabel": "ברקוד",
+    "add": "הוספת פריט",
+    "save": "שמירת שינויים",
+    "saving": "שומרים…",
+    "cancel": "ביטול",
+    "edit": "עריכה",
+    "delete": "מחיקה",
+    "deleting": "מוחקים…",
+    "loading": "טוענים את פריטי המזווה…",
+    "empty": "המזווה שלך ריק.",
+    "noExpiry": "אין תאריך תפוגה",
+    "errors": {
+      "loadFailed": "לא הצלחנו לטעון את פריטי המזווה. כדאי לנסות שוב.",
+      "saveFailed": "לא הצלחנו לשמור את הפריט. כדאי לנסות שוב.",
+      "deleteFailed": "לא הצלחנו למחוק את הפריט. כדאי לנסות שוב."
     }
   },
   "signup": {

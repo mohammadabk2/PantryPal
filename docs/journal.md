@@ -78,3 +78,19 @@
 - Adds basic front-end support for testing
 - added Hebrew support
 
+## 26-11-26
+**Who:** raneen
+
+- Added the `pantry_items` model with user ownership, item name, decimal quantity, unit, optional expiration date, and optional barcode
+- Added an initial Alembic migration for the database schema and applied it to the local test database
+- Added authenticated API endpoints to add, list, partially update, and delete pantry items
+- Limited pantry item queries and changes to the logged-in user
+- Adding an item with the same user, name, unit, and expiration date increases the existing quantity
+- Added a basic pantry page to the frontend for listing, adding, editing, and deleting items; translated it into English, Hebrew, and Arabic
+
+**Testing / decisions**
+- Mohammad reviewed my work and assigned me the next tasks
+- Verified registration, login, pantry CRUD, decimal quantities, and quantity merging through the API
+- Verified a second user cannot see, update, or delete another user's pantry item
+- Ran the frontend build and lint successfully
+
