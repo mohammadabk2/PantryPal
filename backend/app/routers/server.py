@@ -1,42 +1,19 @@
-##cd backend
-##source .venv/bin/activate
-##python server.py
-
-##python3 -m venv .venv
-##source .venv/bin/activate
-##pip install -r requirements.txt
-
-
 import logging
-import os
 from urllib.parse import quote
 
 import httpx
-import uvicorn
-from dotenv import load_dotenv
-from fastapi import FastAPI
+from fastapi import APIRouter
 from fastapi.responses import JSONResponse
 
-load_dotenv()
-
-logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-app = FastAPI()
+router = APIRouter(tags=["products"])
 
 OPEN_FOOD_FACTS_API = "https://world.openfoodfacts.org/api/v2/product"
 EXTERNAL_LOOKUP_ERROR = {"error": "External product lookup failed"}
 
 
-@app.get("/api/health")
-def health() -> dict[str, str]:
-    return {
-        "status": "success",
-        "message": "PantryPal Backend is running",
-    }
-
-
-@app.get("/api/products/{barcode}")
+@router.get("/products/{barcode}")
 async def get_product(barcode: str) -> JSONResponse:
     url = f"{OPEN_FOOD_FACTS_API}/{quote(barcode, safe='')}.json"
     params = {"fields": "product_name,product_name_en"}
@@ -79,11 +56,3 @@ async def get_product(barcode: str) -> JSONResponse:
         return JSONResponse(status_code=404, content={"error": "Product not found"})
 
     return JSONResponse(content={"barcode": barcode, "name": name})
-
-
-if __name__ == "__main__":
-    uvicorn.run(
-        app,
-        host="0.0.0.0",
-        port=int(os.environ.get("PORT", "3000")),
-    )
