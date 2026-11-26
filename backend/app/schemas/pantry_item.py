@@ -3,7 +3,7 @@ from datetime import date
 from decimal import Decimal
 from typing import Annotated
 
-from pydantic import BaseModel, ConfigDict, Field, StringConstraints
+from pydantic import BaseModel, ConfigDict, Field, StringConstraints, model_validator
 
 
 ItemName = Annotated[
@@ -28,8 +28,21 @@ class PantryItemCreate(BaseModel):
     barcode: Barcode | None = None
 
 
-class PantryItemUpdate(PantryItemCreate):
-    pass
+class PantryItemUpdate(BaseModel):
+    name: ItemName | None = None
+    quantity: Quantity | None = None
+    unit: Unit | None = None
+    expiration_date: date | None = None
+    barcode: Barcode | None = None
+
+    @model_validator(mode="after")
+    def validate_update_fields(self) -> "PantryItemUpdate":
+        if not self.model_fields_set:
+            raise ValueError("At least one field must be provided")
+        for field in ("name", "quantity", "unit"):
+            if field in self.model_fields_set and getattr(self, field) is None:
+                raise ValueError(f"{field} cannot be null")
+        return self
 
 
 class PantryItemRead(PantryItemCreate):

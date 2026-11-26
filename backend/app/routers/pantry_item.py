@@ -49,7 +49,7 @@ def list_items(user: CurrentUser, db: DB):
     ).all()
 
 
-@router.put("/me/pantry-items/{item_id}", response_model=PantryItemRead)
+@router.patch("/me/pantry-items/{item_id}", response_model=PantryItemRead)
 def edit_item(item_id: uuid.UUID, body: PantryItemUpdate, user: CurrentUser, db: DB):
     item = db.scalar(
         select(PantryItem).where(
@@ -60,7 +60,7 @@ def edit_item(item_id: uuid.UUID, body: PantryItemUpdate, user: CurrentUser, db:
     if item is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Item not found")
 
-    for field, value in body.model_dump().items():
+    for field, value in body.model_dump(exclude_unset=True).items():
         setattr(item, field, value)
 
     db.commit()
