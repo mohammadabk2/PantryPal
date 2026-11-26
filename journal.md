@@ -79,3 +79,10 @@
 - Kept external product results out of the database and displayed them the same way as local results, without a source label
 - Added timeout and error handling for requests to Open Food Facts and updated the barcode documentation
 - Verified the Open Food Facts response with a known barcode and passed frontend build/lint and backend TypeScript checks
+
+## 26-11-26
+
+- Replaced the barcode demo's Express backend with a Python FastAPI server while keeping the API routes used by the React frontend
+- Removed database access from the barcode demo; product lookups now go directly to Open Food Facts and are not saved
+- Added Python backend dependencies and updated the barcode setup instructions
+- Verified the backend health endpoint and a known barcode lookup, and built the frontend successfully
