@@ -8,11 +8,18 @@ export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), '')
 
   for (const name of ['VITE_API_URL', 'API_PROXY_TARGET']) {
-    if (!env[name]) throw new Error(`Missing ${name}. Copy client/.env.example to client/.env.`)
+    if (!env[name]) {
+      throw new Error(`Missing ${name}. Copy client/.env.example to client/.env.`)
+    }
   }
 
-  // Forward /api/* to the FastAPI backend so the client can call relative URLs.
-  const proxy = { '/api': env.API_PROXY_TARGET }
+  // Forward /api/* to the backend so the client can call relative URLs.
+  const proxy = {
+    '/api': {
+      target: env.API_PROXY_TARGET,
+      changeOrigin: true,
+    },
+  }
 
   return {
     plugins: [

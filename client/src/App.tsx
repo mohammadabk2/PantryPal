@@ -13,10 +13,11 @@ function App() {
     <>
       <LanguageSwitcher />
       <section id="center">
-        <div>        <h1 className="logo">
-          <img src={appLogo} alt={t('common.appName')} width={250} height={64} />
-        </h1></div>
-
+        <div>
+          <h1 className="logo">
+            <img src={appLogo} alt={t('common.appName')} width={250} height={64} />
+          </h1>
+        </div>
 
         <div>
           <h1 className="title">{t('home.welcome')}</h1>
@@ -48,12 +49,7 @@ function App() {
             </>
           )
         )}
-
-
-
       </section>
-
-
 
       <div className="ticks"></div>
       <section id="spacer"></section>

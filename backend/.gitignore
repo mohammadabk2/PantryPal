@@ -1,5 +1,7 @@
-__pycache__/
-*.pyc
-.venv/
-venv/
 .env
+dist/
+.venv/
+__pycache__/
+*.py[cod]
+*.pyc
+venv/

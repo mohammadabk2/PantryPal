@@ -78,3 +78,30 @@
 - Adds basic front-end support for testing
 - added Hebrew support
 
+
+## 17-11-26
+**Who:** Raneen
+
+- Connected the barcode scanner and its status/error messages to the app's English and Arabic translations
+- Separated the barcode scanner component from the API request logic for product lookup
+- Consolidated barcode work into feature/barcode-product-lookup
+- Verified the frontend with successful build and lint checks
+
+**Problems / decisions**
+- Moved hard-coded barcode texts into translation files so the scanner follows the language selected in the app
+
+## 22-11-26
+**Who:** Raneen
+
+- Added an Open Food Facts lookup fallback when a scanned barcode is not found in the local database
+- Kept external product results out of the database and displayed them the same way as local results, without a source label
+- Added timeout and error handling for requests to Open Food Facts and updated the barcode documentation
+- Verified the Open Food Facts response with a known barcode and passed frontend build/lint and backend TypeScript checks
+
+## 26-11-26
+**Who:** Raneen
+
+- Replaced the barcode demo's Express backend with a Python FastAPI server while keeping the API routes used by the React frontend
+- Removed database access from the barcode demo; product lookups now go directly to Open Food Facts and are not saved
+- Added Python backend dependencies and updated the barcode setup instructions
+- Verified the backend health endpoint and a known barcode lookup, and built the frontend successfully

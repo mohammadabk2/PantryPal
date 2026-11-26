@@ -48,10 +48,10 @@ This only creates tables that don't exist yet. It does not change a table that a
 From `backend/`, with the virtual environment active:
 
 ```bash
-uvicorn app.main:app --reload
+uvicorn app.main:app --reload --port 8001
 ```
 
-- API: http://localhost:8000
+- API: http://localhost:8001
 
 `--reload` restarts the server whenever you save a file. Leave it off in production.
 
@@ -74,7 +74,8 @@ sudo docker compose down
 | Method | Path          | Description            |
 | ------ | ------------- | ---------------------- |
 | GET    | `/`           | Checks the API is up   |
-| GET    | `/api/health` | Health check           |
+| GET    | `/api/health` | Checks the API and database connection |
+| GET    | `/api/products/{barcode}` | Looks up a product by barcode through Open Food Facts |
 | POST   | `/api/auth/register` | Create an account |
 | POST   | `/api/auth/login` | Log in, get a token |
 | GET    | `/api/auth/me` | The logged-in user |
