@@ -1,0 +1,102 @@
+{
+  "common": {
+    "appName": "PantryPal",
+    "language": "שפה"
+  },
+  "home": {
+    "welcome": "ברוכים הבאים ל-PantryPal",
+    "login": "התחברות",
+    "noAccount": "אין לך חשבון?",
+    "signUp": "הרשמה",
+    "loggedInAs": "התחברת בתור {{name}}",
+    "logout": "התנתקות"
+  },
+  "login": {
+    "title": "התחברות",
+    "emailLabel": "אימייל",
+    "passwordLabel": "סיסמה",
+    "submit": "התחברות",
+    "submitting": "מתחברים…",
+    "backHome": "חזרה לדף הבית",
+    "errors": {
+      "invalidCredentials": "האימייל או הסיסמה שגויים.",
+      "accountDisabled": "החשבון הזה מושבת.",
+      "serverUnreachable": "אין חיבור לשרת. כדאי לנסות שוב.",
+      "generic": "משהו השתבש. כדאי לנסות שוב."
+    }
+  },
+  "signup": {
+    "title": "הרשמה",
+    "stepOf": "שלב {{current}} מתוך {{total}}",
+    "back": "חזרה",
+    "next": "המשך",
+    "submit": "יצירת חשבון",
+    "submitting": "יוצרים את החשבון…",
+    "showPassword": "הצגה",
+    "hidePassword": "הסתרה",
+    "haveAccount": "כבר יש לך חשבון?",
+    "backHome": "חזרה לדף הבית",
+    "steps": {
+      "name": {
+        "question": "איך לקרוא לך?"
+      },
+      "email": {
+        "question": "נעים להכיר, {{name}}! מה כתובת האימייל שלך?"
+      },
+      "password": {
+        "question": "בחירת סיסמה",
+        "hint": "לפחות 8 תווים"
+      },
+      "tags": {
+        "question": "מה אוהבים לאכול?",
+        "hint": "אפשר לבחור כמה שרוצים, או לא לבחור בכלל. אפשר לשנות את זה בהמשך."
+      }
+    },
+    "errors": {
+      "nameRequired": "יש להזין שם.",
+      "emailInvalid": "יש להזין כתובת אימייל תקינה.",
+      "passwordTooShort": "הסיסמה צריכה להכיל לפחות 8 תווים.",
+      "emailTaken": "כבר קיים חשבון עם האימייל הזה.",
+      "invalidInput": "יש לבדוק את הפרטים ולנסות שוב.",
+      "serverUnreachable": "אין חיבור לשרת. כדאי לנסות שוב.",
+      "generic": "משהו השתבש. כדאי לנסות שוב."
+    }
+  },
+  "tags": {
+    "middle_eastern": "מזרח תיכוני",
+    "mediterranean": "ים תיכוני",
+    "italian": "איטלקי",
+    "asian": "אסייתי",
+    "indian": "הודי",
+    "mexican": "מקסיקני",
+    "breakfast": "ארוחת בוקר",
+    "salads": "סלטים",
+    "soups": "מרקים",
+    "baking": "אפייה",
+    "desserts": "קינוחים",
+    "quick": "ארוחות מהירות",
+    "healthy": "בריא",
+    "spicy": "חריף",
+    "comfort_food": "אוכל מנחם",
+    "chicken": "עוף",
+    "beef": "בקר",
+    "fish": "דגים",
+    "eggs": "ביצים",
+    "cheese": "גבינות",
+    "pasta": "פסטה",
+    "rice": "אורז",
+    "legumes": "קטניות",
+    "vegetables": "ירקות"
+  },
+  "tagGroups": {
+    "cuisine": "מטבחים",
+    "dish": "מנות",
+    "style": "סגנון",
+    "ingredient": "מרכיבים"
+  },
+  "tagPicker": {
+    "loading": "טוענים אפשרויות…",
+    "loadFailed": "לא הצלחנו לטעון את האפשרויות.",
+    "retry": "ניסיון נוסף"
+  }
+}

@@ -1,0 +1,155 @@
+/* Styles only the signup page uses. Shared buttons/inputs live in styles/components.css. */
+
+.signup-wizard {
+  /* How far a question slides. Flipped for right-to-left languages below. */
+  --slide: 40px;
+
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  width: 100%;
+  max-width: 480px;
+  text-align: start;
+  /* Hide the sliding question past the edges, but leave room for focus outlines. */
+  overflow: clip;
+  overflow-clip-margin: 8px;
+}
+
+[dir='rtl'] .signup-wizard {
+  --slide: -40px;
+}
+
+/* Progress bar */
+.signup-progress {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 14px;
+}
+
+.progress-track {
+  height: 6px;
+  border-radius: 999px;
+  background: var(--border);
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  border-radius: inherit;
+  background: var(--accent);
+  transition: width 300ms ease;
+}
+
+/* One question */
+.signup-step {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.step-question {
+  font-family: var(--heading);
+  font-size: 32px;
+  font-weight: 500;
+  line-height: 1.2;
+  letter-spacing: -0.5px;
+  color: var(--text-h);
+
+  @media (max-width: 1024px) {
+    font-size: 26px;
+  }
+}
+
+.password-field {
+  position: relative;
+
+  .input {
+    padding-inline-end: 80px;
+  }
+}
+
+.toggle-visibility {
+  position: absolute;
+  inset-inline-end: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  padding: 6px 10px;
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--accent);
+  font: inherit;
+  font-size: 14px;
+  cursor: pointer;
+
+  &:hover {
+    background: var(--accent-bg);
+  }
+  &:focus-visible {
+    outline: 2px solid var(--accent);
+  }
+}
+
+.signup-actions {
+  display: flex;
+  gap: 12px;
+
+  /* The Continue / Create account button fills the rest of the row. */
+  .btn:not(.btn-secondary) {
+    flex: 1;
+  }
+}
+
+/* Slide animations. Going forward, the new question comes in from the end side
+   (right in English, left in Arabic) and the old one leaves toward the start side. */
+.enter-forward {
+  --from: var(--slide);
+  animation: step-in 250ms ease-out both;
+}
+.enter-back {
+  --from: calc(var(--slide) * -1);
+  animation: step-in 250ms ease-out both;
+}
+/* 180ms must match LEAVE_MS in Signup.tsx. */
+.leave-forward {
+  --to: calc(var(--slide) * -1);
+  animation: step-out 180ms ease-in both;
+}
+.leave-back {
+  --to: var(--slide);
+  animation: step-out 180ms ease-in both;
+}
+
+@keyframes step-in {
+  from {
+    opacity: 0;
+    transform: translateX(var(--from));
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes step-out {
+  from {
+    opacity: 1;
+    transform: none;
+  }
+  to {
+    opacity: 0;
+    transform: translateX(var(--to));
+  }
+}
+
+/* "Reduce motion" turned on in system settings: fade only, no sliding. */
+@media (prefers-reduced-motion: reduce) {
+  .signup-wizard,
+  [dir='rtl'] .signup-wizard {
+    --slide: 0px;
+  }
+  .progress-fill {
+    transition: none;
+  }
+}
