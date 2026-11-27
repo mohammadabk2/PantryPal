@@ -25,9 +25,14 @@ function App() {
         {user ? (
           <div>
             <h2 className="subtitle">{t('home.loggedInAs', { name: user.display_name })}</h2>
-            <button className="btn btn-secondary" onClick={logout}>
-              {t('home.logout')}
-            </button>
+            <div className="home-actions">
+              <button className="btn" onClick={() => navigate('/pantry')}>
+                {t('home.pantry')}
+              </button>
+              <button className="btn btn-secondary" onClick={logout}>
+                {t('home.logout')}
+              </button>
+            </div>
           </div>
         ) : (
           // While a saved login is being checked, show nothing instead of flashing the login button.

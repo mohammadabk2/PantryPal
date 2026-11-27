@@ -84,4 +84,10 @@ sudo docker compose down
 | PUT    | `/api/me/preferences/tags/{tag}` | Set how much the user likes a tag, `{"weight": -1 to 1}`|
 | DELETE | `/api/me/preferences/tags/{tag}` | Remove a tag opinion |
 | DELETE | `/api/me/preferences/feature-weights` | Reset learned factor weights to defaults |
+| POST   | `/api/me/pantry-items` | Add a pantry item, or increase the quantity of a matching item |
+| GET    | `/api/me/pantry-items` | List the logged-in user's pantry items |
+| PATCH  | `/api/me/pantry-items/{item_id}` | Partially update a pantry item |
+| DELETE | `/api/me/pantry-items/{item_id}` | Delete a pantry item |
+
+Pantry item endpoints require `Authorization: Bearer <token>` and only access items belonging to the logged-in user. For `PATCH`, omitted fields remain unchanged; `expiration_date` and `barcode` can be set to `null` to clear them.
 

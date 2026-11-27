@@ -99,6 +99,13 @@
   }
 }
 
+.home-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px;
+}
+
 /* ---------- Forms ---------- */
 
 /* A simple vertical form: <form class="form"> with <label class="field"> inside. */
